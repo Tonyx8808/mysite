@@ -11,27 +11,43 @@ const _frames: string[] = Array.from({ length: FRAME_COUNT }, (_, i) => framePat
 const _loaded = new Set<number>()
 let   _listeners: Array<(pct: number, done: boolean) => void> = []
 let   _started = false
+let   _done    = false
 
 function subscribePreload(cb: (pct: number, done: boolean) => void) {
   // Se già completo, notifica subito senza ripartire
-  if (_loaded.size === FRAME_COUNT) { cb(1, true); return () => {} }
+  if (_done) { cb(1, true); return () => {} }
 
   _listeners.push(cb)
 
   if (!_started) {
     _started = true
-    _frames.forEach((src, i) => {
-      const img = new Image()
-      img.src = src
-      img.onload = img.onerror = () => {
-        if (_loaded.has(i)) return        // già contato (strict mode double-fire)
-        _loaded.add(i)
-        const pct  = _loaded.size / FRAME_COUNT
-        const done = _loaded.size === FRAME_COUNT
-        _listeners.forEach(fn => fn(pct, done))
-        if (done) _listeners = []         // libera memoria
+    // Coda con concorrenza limitata: 240 richieste parallele saturano
+    // il browser mobile (max 6 conn/dominio) e causano timeout silenzioso
+    const CONCURRENCY = 6
+    const queue = Array.from({ length: FRAME_COUNT }, (_, i) => i)
+    let qIdx   = 0
+    let active = 0
+
+    const loadNext = () => {
+      while (active < CONCURRENCY && qIdx < queue.length) {
+        const i = queue[qIdx++]
+        active++
+        const img = new Image()
+        img.src   = _frames[i]
+        img.onload = img.onerror = () => {
+          active--
+          if (!_loaded.has(i)) {
+            _loaded.add(i)
+            const pct  = _loaded.size / FRAME_COUNT
+            const done = _loaded.size === FRAME_COUNT
+            _listeners.forEach(fn => fn(pct, done))
+            if (done) { _done = true; _listeners = [] }
+          }
+          loadNext()
+        }
       }
-    })
+    }
+    loadNext()
   }
 
   return () => { _listeners = _listeners.filter(fn => fn !== cb) }
@@ -76,8 +92,8 @@ export default function HeroScroll() {
   const wrapTopRef    = useRef(0)
   const wrapHeightRef = useRef(0)
 
-  const [loadPct, setLoadPct]           = useState(() => _loaded.size / FRAME_COUNT)
-  const [ready, setReady]               = useState(() => _loaded.size === FRAME_COUNT)
+  const [loadPct, setLoadPct]           = useState(() => _done ? 1 : _loaded.size / FRAME_COUNT)
+  const [ready, setReady]               = useState(() => _done)
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set())
 
   // ── Cache wrapper metrics (recalculate on resize / orientation change) ─────

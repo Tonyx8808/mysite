@@ -1,5 +1,7 @@
 'use client'
+
 import { useState, useEffect, useCallback } from 'react'
+
 import Loader from '@/components/Loader'
 import Navbar from '@/components/Navbar'
 import HeroSection from '@/components/HeroSection'
@@ -10,6 +12,7 @@ import SkillsSection from '@/components/SkillsSection'
 import QuoteSection from '@/components/QuoteSection'
 import ContactSection from '@/components/ContactSection'
 import Footer from '@/components/Footer'
+
 import {
   useScrollReveal,
   useParallax,
@@ -27,14 +30,18 @@ export default function Home() {
     setLoaded(true)
   }, [])
 
-  // Init all hooks after load
-  useCustomCursor()
-  useScrollReveal()
-  useParallax()
-  useHeroTilt()
-  useSkillBars()
-  useCounters()
-  useOrbitTilt()
+  // Init hooks SOLO dopo che il loader è completato
+  useEffect(() => {
+    if (!loaded) return
+
+    useCustomCursor()
+    useScrollReveal()
+    useParallax()
+    useHeroTilt()
+    useSkillBars()
+    useCounters()
+    useOrbitTilt()
+  }, [loaded])
 
   return (
     <>
@@ -46,10 +53,12 @@ export default function Home() {
       <Loader onDone={handleLoaderDone} />
 
       {/* Main content */}
-      <div style={{
-        opacity: loaded ? 1 : 0,
-        transition: 'opacity 0.5s ease',
-      }}>
+      <div
+        style={{
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.5s ease',
+        }}
+      >
         <Navbar />
 
         <main>

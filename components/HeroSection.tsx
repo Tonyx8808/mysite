@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const FRAME_COUNT = 240
-const framePath   = (i: number) =>
+const framePath = (i: number) =>
   `/heroimg/ezgif-frame-${String(i).padStart(3, '0')}.jpg`
 
 const DIALOGUES = [
@@ -31,23 +31,50 @@ const DIALOGUES = [
 ]
 
 export default function HeroScroll() {
-  const wrapRef      = useRef<HTMLDivElement>(null)
-  const imgRef       = useRef<HTMLImageElement>(null)
-  const heroTextRef  = useRef<HTMLDivElement>(null)
-  const bigTextRef   = useRef<HTMLDivElement>(null)
-  const barRef       = useRef<HTMLDivElement>(null)
-  const pctRef       = useRef<HTMLSpanElement>(null)
+  const wrapRef     = useRef<HTMLDivElement>(null)
+  const imgRef      = useRef<HTMLImageElement>(null)
+  const heroTextRef = useRef<HTMLDivElement>(null)
+  const bigTextRef  = useRef<HTMLDivElement>(null)
+  const barRef      = useRef<HTMLDivElement>(null)
+  const pctRef      = useRef<HTMLSpanElement>(null)
 
   const framesRef    = useRef<string[]>([])
   const loadedSet    = useRef<Set<number>>(new Set())
   const currentFrame = useRef(0)
   const rafRef       = useRef<number | null>(null)
 
+  // Cache wrapper metrics so we don't thrash layout on every scroll tick
+  const wrapTopRef    = useRef(0)
+  const wrapHeightRef = useRef(0)
+
   const [loadPct, setLoadPct]           = useState(0)
   const [ready, setReady]               = useState(false)
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set())
 
-  // ── Preload frames ──────────────────────────────────────────────────────────
+  // ── Cache wrapper metrics (recalculate on resize / orientation change) ─────
+  useEffect(() => {
+    const measure = () => {
+      const wrap = wrapRef.current
+      if (!wrap) return
+      // Use offsetTop instead of getBoundingClientRect to get the document-relative top
+      // This avoids the sticky viewport contaminating the measurement
+      let top = 0
+      let el: HTMLElement | null = wrap
+      while (el) { top += el.offsetTop; el = el.offsetParent as HTMLElement | null }
+      wrapTopRef.current    = top
+      wrapHeightRef.current = wrap.offsetHeight
+    }
+
+    measure()
+    window.addEventListener('resize', measure)
+    window.addEventListener('orientationchange', () => setTimeout(measure, 300))
+    return () => {
+      window.removeEventListener('resize', measure)
+      window.removeEventListener('orientationchange', () => setTimeout(measure, 300))
+    }
+  }, [])
+
+  // ── Preload frames ─────────────────────────────────────────────────────────
   useEffect(() => {
     let done = 0
     framesRef.current = Array.from({ length: FRAME_COUNT }, (_, i) => framePath(i + 1))
@@ -63,18 +90,18 @@ export default function HeroScroll() {
     })
   }, [])
 
-  // ── Scroll → frame swap ─────────────────────────────────────────────────────
+  // ── Scroll → frame swap ────────────────────────────────────────────────────
   useEffect(() => {
     const onScroll = () => {
       if (rafRef.current) return
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null
-        const wrap = wrapRef.current
-        if (!wrap) return
 
-        const rect  = wrap.getBoundingClientRect()
-        const total = wrap.offsetHeight - window.innerHeight
-        const prog  = total <= 0 ? 0 : Math.min(1, Math.max(0, -rect.top / total))
+        // scrollY is always reliable — no layout reads needed here
+        const scrollY  = window.scrollY
+        const total    = wrapHeightRef.current - window.innerHeight
+        const rawProg  = total <= 0 ? 0 : (scrollY - wrapTopRef.current) / total
+        const prog     = Math.min(1, Math.max(0, rawProg))
 
         const idx = Math.min(FRAME_COUNT - 1, Math.floor(prog * FRAME_COUNT))
         if (idx !== currentFrame.current && imgRef.current) {
@@ -115,60 +142,78 @@ export default function HeroScroll() {
     <div ref={wrapRef} id="home" style={{ height: '600vh', position: 'relative' }}>
       <style>{`
         /* ── Desktop dialogue cards ── */
-        .hero-card-desktop {
-          display: none;
-        }
+        .hero-card-desktop { display: none; }
         @media (min-width: 768px) {
-          .hero-card-desktop {
-            display: block !important;
-          }
+          .hero-card-desktop { display: block !important; }
         }
 
         /* ── HUD labels: nascondi su mobile stretto ── */
-        .hero-hud-label {
-          display: flex;
-        }
+        .hero-hud-label { display: flex; }
         @media (max-width: 480px) {
           .hero-hud-label { display: none; }
         }
 
-        /* ── Hero title: più piccolo su mobile ── */
+        /* ── Hero title ── */
         .hero-title {
-          font-size: clamp(2.2rem, 10vw, 7rem);
+          font-size: clamp(2.8rem, 14vw, 7rem);
           letter-spacing: -1px;
         }
 
-        /* ── Big text: adatta su mobile ── */
+        /* ── Big text ── */
         .hero-big-text-wrap {
           max-width: 90%;
           left: 1.5rem;
           bottom: 6rem;
         }
         .hero-big-title {
-          font-size: clamp(1.6rem, 6vw, 4.5rem);
+          font-size: clamp(1.8rem, 7vw, 4.5rem);
         }
 
-        /* ── Progress bottom: padding ── */
-        .hero-progress-wrap {
-          margin: 0 2.5rem;
-        }
+        /* ── Progress bottom ── */
+        .hero-progress-wrap { margin: 0 2.5rem; }
         @media (max-width: 480px) {
-          .hero-progress-wrap {
-            margin: 0 1.2rem;
-          }
-          .hero-bottom-text {
-            font-size: 0.5rem !important;
-          }
+          .hero-progress-wrap { margin: 0 1.2rem; }
+          .hero-bottom-text { font-size: 0.5rem !important; }
         }
 
         /* ── Hero bottom copy area ── */
-        .hero-bottom-area {
-          padding: 0 2.5rem 4.5rem;
-        }
+        .hero-bottom-area { padding: 0 2.5rem 4.5rem; }
         @media (max-width: 480px) {
-          .hero-bottom-area {
-            padding: 0 1.2rem 3.5rem;
+          .hero-bottom-area { padding: 0 1.2rem 3.5rem; }
+        }
+
+        /* ── Frame image: portrait-aware on mobile ── */
+        .hero-frame-img {
+          object-fit: cover;
+          object-position: center center;
+        }
+        /* On narrow portrait viewports keep the subject visible */
+        @media (max-width: 640px) and (orientation: portrait) {
+          .hero-frame-img {
+            object-position: 60% center;
           }
+        }
+
+        /* ── Mobile progress mini-cards (replace desktop dialogue cards) ── */
+        .hero-mobile-tag {
+          display: none;
+          position: absolute;
+          left: 1.2rem;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          flex-direction: column;
+          gap: 0.5rem;
+          max-width: calc(100vw - 2.4rem);
+        }
+        @media (max-width: 767px) {
+          .hero-mobile-tag { display: flex; }
+        }
+        .hero-mobile-tag-inner {
+          background: linear-gradient(135deg, rgba(5,8,16,0.95), rgba(0,20,50,0.92));
+          border: 1px solid rgba(0,102,255,0.35);
+          padding: 0.75rem 1rem;
+          transition: opacity 400ms ease, transform 400ms ease;
         }
       `}</style>
 
@@ -186,10 +231,10 @@ export default function HeroScroll() {
           ref={imgRef}
           src={framePath(1)}
           alt="" aria-hidden
+          className="hero-frame-img"
           style={{
             position: 'absolute', inset: 0,
             width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center center',
             display: 'block', pointerEvents: 'none', userSelect: 'none',
           }}
         />
@@ -391,6 +436,45 @@ export default function HeroScroll() {
           )
         })}
 
+        {/* Mobile dialogue tags — centro schermo, versione compatta */}
+        {DIALOGUES.map((d) => {
+          const vis = visibleCards.has(d.id)
+          return (
+            <div key={`mob-${d.id}`} className="hero-mobile-tag" aria-hidden>
+              <div
+                className="hero-mobile-tag-inner"
+                style={{
+                  opacity: vis ? 1 : 0,
+                  transform: vis ? 'translateY(0)' : 'translateY(12px)',
+                  pointerEvents: 'none',
+                }}
+              >
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  marginBottom: '0.4rem',
+                }}>
+                  <span style={{
+                    fontFamily: 'var(--font-space-mono)', fontSize: '0.55rem',
+                    textTransform: 'uppercase', letterSpacing: '0.28em', color: '#0066FF',
+                  }}>{d.code}</span>
+                  <span style={{
+                    fontFamily: 'var(--font-space-mono)', fontSize: '0.52rem',
+                    textTransform: 'uppercase', letterSpacing: '0.18em', color: '#00A3FF',
+                    background: 'rgba(0,102,255,0.1)', border: '1px solid rgba(0,102,255,0.25)',
+                    padding: '1px 6px',
+                  }}>{d.tag}</span>
+                </div>
+                <p style={{
+                  margin: 0,
+                  fontFamily: 'var(--font-syne)', fontSize: 'clamp(0.8rem, 3.5vw, 1rem)',
+                  fontWeight: 700, textTransform: 'uppercase', lineHeight: 1.25,
+                  color: 'var(--white)',
+                }}>{d.quote}</p>
+              </div>
+            </div>
+          )
+        })}
+
         {/* Loading overlay */}
         {!ready && (
           <div style={{
@@ -435,10 +519,10 @@ function HudCorner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   const posStyle: React.CSSProperties = {
     pointerEvents: 'none', position: 'absolute', zIndex: 10,
     color: 'rgba(0,102,255,0.55)',
-    ...(pos === 'tl' ? { left: '1.5rem', top: '5rem' }      : {}),
-    ...(pos === 'tr' ? { right: '1.5rem', top: '5rem' }     : {}),
-    ...(pos === 'bl' ? { left: '1.5rem', bottom: '3.5rem' } : {}),
-    ...(pos === 'br' ? { right: '1.5rem', bottom: '3.5rem' }: {}),
+    ...(pos === 'tl' ? { left: '1.5rem', top: '5rem' }       : {}),
+    ...(pos === 'tr' ? { right: '1.5rem', top: '5rem' }      : {}),
+    ...(pos === 'bl' ? { left: '1.5rem', bottom: '3.5rem' }  : {}),
+    ...(pos === 'br' ? { right: '1.5rem', bottom: '3.5rem' } : {}),
   }
   const paths: Record<string, string> = {
     tl: `M${s},0 L0,0 L0,${s}`,

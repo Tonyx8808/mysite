@@ -102,6 +102,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
+      className="contact-section"
       style={{ padding: '120px 8%', position: 'relative', overflow: 'hidden' }}
     >
       {/* Glow ambientale */}
@@ -140,7 +141,7 @@ export default function ContactSection() {
           }}>Iniziamo</h2>
         </motion.div>
 
-        <div style={{
+        <div className="contact-grid" style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '5rem',
@@ -203,7 +204,7 @@ export default function ContactSection() {
             </motion.a>
 
             {/* Social */}
-            <div style={{ display: 'flex', gap: '0.7rem' }}>
+            <div style={{ display: 'flex', gap: '0.7rem', flexWrap: 'wrap' }}>
               {SOCIAL.map(({ label, href }) => (
                 <motion.a
                   key={label}
@@ -236,7 +237,7 @@ export default function ContactSection() {
                   transition={{ duration: 0.5 }}
                   style={{
                     ...glass,
-                    padding: '3.5rem 2rem',
+                    padding: 'clamp(1.8rem, 3vw, 3.5rem) clamp(1.25rem, 2.5vw, 2rem)',
                     textAlign: 'center',
                     border: '1px solid rgba(0,255,136,0.2)',
                     background: 'rgba(0,255,136,0.03)',
@@ -282,7 +283,7 @@ export default function ContactSection() {
                   exit={{ opacity: 0 }}
                   style={{
                     ...glass,
-                    padding: '2.5rem',
+                    padding: 'clamp(1.4rem, 3vw, 2.5rem)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '1.3rem',

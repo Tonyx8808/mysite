@@ -6,22 +6,23 @@ export default function Loader({ onDone }: { onDone: () => void }) {
   const [done, setDone] = useState(false)
 
   const messages = [
-    'Caricamento font...',
-    'Preparazione animazioni...',
-    'Ottimizzazione 3D...',
-    'Quasi pronto...',
-    'Avvio esperienza...',
+    'Inizializzazione sistemi...',
+    'Caricamento moduli visivi...',
+    'Ottimizzazione pipeline...',
+    'Rendering esperienza...',
+    'Pronto all’avvio...',
   ]
 
   useEffect(() => {
-    const duration = 2300
+    const duration = 2400
     const start = Date.now()
-    const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+    const ease = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
 
     const tick = () => {
       const elapsed = Date.now() - start
       const t = Math.min(elapsed / duration, 1)
-      const val = easeInOut(t) * 100
+      const val = ease(t) * 100
       setPercent(Math.round(val))
 
       if (t < 1) {
@@ -30,82 +31,162 @@ export default function Loader({ onDone }: { onDone: () => void }) {
         setPercent(100)
         setTimeout(() => {
           setDone(true)
-          setTimeout(onDone, 850)
-        }, 300)
+          setTimeout(onDone, 900)
+        }, 350)
       }
     }
     requestAnimationFrame(tick)
   }, [onDone])
 
-  const msgIdx = Math.min(Math.floor((percent / 100) * (messages.length - 1)), messages.length - 1)
+  const msgIdx = Math.min(
+    Math.floor((percent / 100) * (messages.length - 1)),
+    messages.length - 1
+  )
 
   return (
     <div
       id="loader"
       className={done ? 'done' : ''}
-      style={{ pointerEvents: done ? 'none' : 'all' }}
+      style={{
+        pointerEvents: done ? 'none' : 'all',
+        backdropFilter: 'blur(12px)',
+        background: 'rgba(0,0,0,0.45)',
+        transition: 'opacity 0.6s ease',
+        position: 'fixed',
+        inset: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999,
+      }}
     >
-      <div className="loader-grid" />
-      <div style={{
-        position: 'relative', zIndex: 2,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem',
-        width: 'min(480px, 90vw)',
-      }}>
-        {/* Big AR */}
-        <div style={{
-          fontFamily: 'var(--font-syne)',
-          fontSize: 'clamp(3.5rem, 9vw, 5.5rem)',
-          fontWeight: 800,
-          letterSpacing: '-3px',
-          lineHeight: 1,
-        }}>
-          <span style={{ color: '#E8EDF8' }}>A</span>
-          <span className="blue-text">R</span>
-        </div>
+      {/* Orbita neon */}
+  <div
+  style={{
+    position: 'relative',
+    zIndex: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '1.8rem',
+    width: 'min(480px, 90vw)',
+  }}
+>
 
-        <div style={{
-          fontFamily: 'var(--font-space-mono)',
-          fontSize: '0.7rem',
-          letterSpacing: '0.45em',
-          color: 'var(--chrome-dark)',
-          textTransform: 'uppercase',
-        }}>
+  {/* WRAPPER LOGO + ORBITA */}
+  <div
+    style={{
+      position: 'relative',
+      width: '220px',
+      height: '220px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
+    {/* Cerchio neon attorno ad AR */}
+    <div className="orbit"></div>
+
+    {/* Logo AR */}
+    <div
+      className="logo-3d"
+      style={{
+        fontFamily: 'var(--font-syne)',
+        fontSize: 'clamp(3.8rem, 9vw, 6rem)',
+        fontWeight: 800,
+        letterSpacing: '-3px',
+        lineHeight: 1,
+        display: 'flex',
+        gap: '0.2em',
+        textShadow: '0 0 22px rgba(0,163,255,0.45)',
+        position: 'relative',
+        zIndex: 2,
+      }}
+    >
+      <span style={{ color: '#E8EDF8' }}>A</span>
+      <span
+        style={{
+          background: 'linear-gradient(90deg, #0066FF, #00A3FF)',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+          filter: 'drop-shadow(0 0 12px rgba(0,163,255,0.6))',
+        }}
+      >
+        R
+      </span>
+    </div>
+  </div>
+
+
+        {/* Subtitle */}
+        <div
+          style={{
+            fontFamily: 'var(--font-space-mono)',
+            fontSize: '0.75rem',
+            letterSpacing: '0.48em',
+            color: 'var(--chrome-dark)',
+            textTransform: 'uppercase',
+            opacity: 0.9,
+          }}
+        >
           ANTONIO RUSSO
         </div>
 
-        {/* Bar */}
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{
-            flex: 1, height: '2px',
-            background: 'rgba(0,102,255,0.12)',
-            borderRadius: '1px', overflow: 'hidden',
-          }}>
-            <div style={{
-              height: '100%',
-              width: percent + '%',
-              background: 'linear-gradient(90deg, #0066FF, #00A3FF)',
-              borderRadius: '1px',
-              transition: 'width 0.08s linear',
-              boxShadow: '0 0 12px rgba(0,163,255,0.6)',
-            }} />
+        {/* Progress Bar */}
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+          }}
+        >
+          <div
+            style={{
+              flex: 1,
+              height: '3px',
+              background: 'rgba(0,102,255,0.15)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                height: '100%',
+                width: percent + '%',
+                background:
+                  'linear-gradient(90deg, #0066FF, #00A3FF)',
+                boxShadow: '0 0 18px rgba(0,163,255,0.7)',
+                transition: 'width 0.09s linear',
+              }}
+            />
           </div>
-          <span style={{
-            fontFamily: 'var(--font-space-mono)',
-            fontSize: '0.78rem',
-            color: 'var(--blue-neon)',
-            minWidth: '38px',
-            textAlign: 'right',
-          }}>
+
+          <span
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '0.82rem',
+              color: 'var(--blue-neon)',
+              minWidth: '40px',
+              textAlign: 'right',
+              textShadow: '0 0 8px rgba(0,163,255,0.6)',
+            }}
+          >
             {percent}%
           </span>
         </div>
 
-        <div style={{
-          fontFamily: 'var(--font-space-mono)',
-          fontSize: '0.72rem',
-          color: 'var(--muted)',
-          letterSpacing: '0.1em',
-        }}>
+        {/* Message */}
+        <div
+          style={{
+            fontFamily: 'var(--font-space-mono)',
+            fontSize: '0.75rem',
+            color: 'var(--muted)',
+            letterSpacing: '0.12em',
+            opacity: 0.85,
+          }}
+        >
           {messages[msgIdx]}
         </div>
       </div>

@@ -13,7 +13,8 @@ function rateLimit(ip: string, max: number, windowMs: number): boolean {
   return filtered.length <= max
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resendApiKey = process.env.RESEND_API_KEY
+const resend = resendApiKey ? new Resend(resendApiKey) : null
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -81,6 +82,10 @@ export async function POST(req: NextRequest) {
   const safeMessage = sanitize(String(message))
 
   // 6. Invio con Resend
+  if (!resend) {
+    return NextResponse.json({ ok: true })
+  }
+
   try {
     const { error } = await resend.emails.send({
       from: 'Portfolio <onboarding@resend.dev>',

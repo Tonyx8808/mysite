@@ -47,7 +47,7 @@ export default function ServicesSection() {
   }
 
   return (
-    <section id="services" style={{
+    <section id="services" className="services-section" style={{
       background: 'var(--navy)',
       padding: '120px 8%',
       position: 'relative',
@@ -77,7 +77,7 @@ export default function ServicesSection() {
       <div style={{ position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
-        <div className="reveal-up" style={{
+        <div className="reveal-up services-header" style={{
           display: 'flex', alignItems: 'flex-end',
           justifyContent: 'space-between',
           marginBottom: '5rem',
@@ -103,9 +103,9 @@ export default function ServicesSection() {
         </div>
 
         {/* Grid */}
-        <div style={{
+        <div className="services-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           gap: '1.5px',
           background: 'rgba(0,102,255,0.1)',
           borderRadius: 'var(--radius-lg)',
@@ -116,7 +116,7 @@ export default function ServicesSection() {
             return (
               <div
                 key={i}
-                className="reveal-up"
+                className="reveal-up service-card-wrap"
                 style={{ transitionDelay: `${i * 0.07}s` }}
                 onMouseEnter={() => { setHovered(i); setTilt({ x: 0, y: 0 }) }}
                 onMouseLeave={() => { setHovered(null); setTilt({ x: 0, y: 0 }) }}

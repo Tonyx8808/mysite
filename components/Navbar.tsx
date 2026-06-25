@@ -14,6 +14,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [visible, setVisible] = useState(false)
   const [active, setActive] = useState('#home')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 2600)
@@ -28,6 +29,7 @@ export default function Navbar() {
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault()
     setActive(href)
+    setMobileMenuOpen(false)
     const target = document.querySelector(href)
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -114,6 +116,70 @@ export default function Navbar() {
         .logo-wrap:hover {
           opacity: 0.85;
         }
+        .nav-menu-toggle {
+          display: none;
+          align-items: center;
+          justify-content: center;
+          gap: 0.24rem;
+          flex-direction: column;
+          width: 2.35rem;
+          height: 2.35rem;
+          border: 1px solid rgba(0, 150, 255, 0.3);
+          border-radius: 999px;
+          background: rgba(255,255,255,0.04);
+          cursor: pointer;
+          padding: 0;
+        }
+        .nav-menu-toggle span {
+          width: 1rem;
+          height: 1px;
+          background: var(--white);
+          display: block;
+          transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+        .nav-menu-toggle[aria-expanded='true'] span:nth-child(1) {
+          transform: translateY(4px) rotate(45deg);
+        }
+        .nav-menu-toggle[aria-expanded='true'] span:nth-child(2) {
+          opacity: 0;
+        }
+        .nav-menu-toggle[aria-expanded='true'] span:nth-child(3) {
+          transform: translateY(-4px) rotate(-45deg);
+        }
+        .nav-links {
+          display: flex;
+          list-style: none;
+          gap: 2.5rem;
+          margin: 0;
+          padding: 0;
+          align-items: center;
+        }
+        @media (max-width: 900px) {
+          .nav-links {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.7rem);
+            right: 5%;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.9rem;
+            padding: 1rem 1.1rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(0, 102, 255, 0.18);
+            background: rgba(5, 7, 18, 0.97);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+            min-width: min(220px, 78vw);
+          }
+          .nav-links.open {
+            display: flex;
+          }
+          .nav-menu-toggle {
+            display: inline-flex;
+          }
+          .nav-cta--desktop {
+            display: none;
+          }
+        }
       `}</style>
 
       <nav
@@ -139,6 +205,7 @@ export default function Navbar() {
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: scrolled ? '0.55rem 5%' : '1rem 5%',
+            position: 'relative',
           }}
         >
           {/* Logo */}
@@ -163,14 +230,20 @@ export default function Navbar() {
             />
           </a>
 
+          <button
+            type="button"
+            className="nav-menu-toggle"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Apri menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
           {/* Nav Links */}
-          <ul style={{
-            display: 'flex',
-            listStyle: 'none',
-            gap: '2.5rem',
-            margin: 0,
-            padding: 0,
-          }}>
+          <ul className={`nav-links${mobileMenuOpen ? ' open' : ''}`}>
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <a
@@ -188,7 +261,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={(e) => handleScroll(e, '#contact')}
-            className="nav-cta"
+            className="nav-cta nav-cta--desktop"
           >
             Contattami →
           </a>

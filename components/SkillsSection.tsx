@@ -51,7 +51,7 @@ export default function SkillsSection() {
   const [hoveredBar, setHoveredBar] = useState<number | null>(null)
 
   return (
-    <section id="skills" style={{
+    <section id="skills" className="skills-section" style={{
       background: 'var(--navy-light)',
       padding: '120px 8%',
       position: 'relative',
@@ -91,9 +91,9 @@ export default function SkillsSection() {
         </div>
 
         {/* Main layout: grid left + detail panel right */}
-        <div style={{
+        <div className="skills-layout" style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 340px',
+          gridTemplateColumns: 'minmax(0, 1fr) 340px',
           gap: '4rem',
           alignItems: 'start',
         }}>
@@ -105,7 +105,8 @@ export default function SkillsSection() {
     style={{
       display: 'grid',
       width: '100%',
-gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+      gap: '1px',
       background: 'rgba(0,102,255,0.1)',
       borderRadius: 'var(--radius-lg)',
       overflow: 'hidden',
@@ -117,6 +118,7 @@ gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
       return (
         <div
           key={skill.label}
+          className="skill-tile"
           onMouseEnter={() => setActive(i)}
           onMouseLeave={() => setActive(null)}
           style={{
@@ -253,6 +255,7 @@ gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
               {SKILLS.map(({ label, level, color }, i) => (
                 <div
                   key={label}
+                  className="skills-bar-row"
                   onMouseEnter={() => setHoveredBar(i)}
                   onMouseLeave={() => setHoveredBar(null)}
                   style={{
@@ -264,7 +267,7 @@ gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
                     transition: 'opacity 0.3s',
                   }}
                 >
-                  <span style={{
+                  <span className="bar-label" style={{
                     fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem',
                     color: hoveredBar === i ? 'var(--white)' : 'var(--chrome-dark)',
                     letterSpacing: '0.05em', transition: 'color 0.3s',
@@ -288,7 +291,7 @@ gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
                       }}
                     />
                   </div>
-                  <span style={{
+                  <span className="bar-value" style={{
                     fontFamily: 'var(--font-space-mono)', fontSize: '0.65rem',
                     color: hoveredBar === i ? 'var(--blue-bright)' : 'var(--muted)',
                     textAlign: 'right', transition: 'color 0.3s',
@@ -299,7 +302,7 @@ gridTemplateColumns: `repeat(${SKILLS.length}, 1fr)`,      gap: '1px',
           </div>
 
           {/* Right: detail panel */}
-          <div className="reveal-up" style={{ position: 'sticky', top: '120px' }}>
+          <div className="reveal-up skills-detail-panel" style={{ position: 'sticky', top: '120px' }}>
             <div style={{
               border: '1px solid rgba(0,102,255,0.2)',
               borderRadius: 'var(--radius-lg)',

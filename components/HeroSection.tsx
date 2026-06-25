@@ -126,15 +126,16 @@ export default function HeroScroll() {
   return (
     <div
       ref={wrapRef}
-      style={{ height: '600vh', position: 'relative' }}
+      className="hero-scroll-wrap"
+      style={{ position: 'relative' }}
     >
       {/* STICKY VIEWPORT */}
-      <div style={{
+      <div className="hero-sticky-viewport" style={{
         position: 'sticky',
         top: 0,
         height: '100vh',
-        width: '100vw',
-        marginLeft: 'calc(50% - 50vw)',
+        width: '100%',
+        marginLeft: 0,
         overflow: 'hidden',
         background: '#050810',
       }}>
@@ -182,7 +183,7 @@ export default function HeroScroll() {
         <HudCorner pos="br" />
 
         {/* ── Top left label ── */}
-        <div style={{
+        <div className="hero-top-labels" style={{
           pointerEvents: 'none',
           position: 'absolute', left: '2.5rem', top: '5.5rem', zIndex: 10,
           display: 'flex', alignItems: 'center', gap: '0.6rem',
@@ -195,7 +196,7 @@ export default function HeroScroll() {
         </div>
 
         {/* ── Top right readout ── */}
-        <div style={{
+        <div className="hero-top-readout" style={{
           pointerEvents: 'none',
           position: 'absolute', right: '2.5rem', top: '5.5rem', zIndex: 10,
           display: 'flex', alignItems: 'center', gap: '0.75rem',
@@ -216,7 +217,7 @@ export default function HeroScroll() {
         </div>
 
         {/* ── Hero text — fades on scroll ── */}
-        <div ref={heroTextRef} style={{
+        <div ref={heroTextRef} className="hero-text-shell" style={{
           position: 'absolute', insetInline: 0, bottom: 0, zIndex: 10,
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
           gap: '1.2rem', padding: '0 2.5rem 4.5rem',
@@ -262,7 +263,7 @@ export default function HeroScroll() {
         </div>
 
         {/* ── Big text — appare a metà scroll ── */}
-        <div ref={bigTextRef} style={{
+        <div ref={bigTextRef} className="hero-big-text" style={{
           pointerEvents: 'none',
           position: 'absolute', bottom: '5rem', left: '2.5rem', zIndex: 10,
           display: 'flex', flexDirection: 'column', gap: '1rem',
@@ -307,7 +308,7 @@ export default function HeroScroll() {
           pointerEvents: 'none', position: 'absolute',
           insetInline: 0, bottom: 0, zIndex: 10,
         }}>
-          <div style={{
+          <div className="hero-progress-shell" style={{
             margin: '0 2.5rem', marginBottom: '0.75rem',
             height: '1px', background: 'rgba(255,255,255,0.06)',
           }}>
@@ -318,7 +319,7 @@ export default function HeroScroll() {
               boxShadow: '0 0 8px 1px rgba(0,102,255,0.6)',
             }} />
           </div>
-          <div style={{
+          <div className="hero-progress-meta" style={{
             margin: '0 2.5rem', paddingBottom: '1rem',
             display: 'flex', justifyContent: 'space-between',
             fontFamily: 'var(--font-space-mono)', fontSize: '0.6rem',

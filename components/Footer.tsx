@@ -36,7 +36,7 @@ export default function Footer() {
   }
 
   return (
-    <footer style={{
+    <footer className="footer-section" style={{
       background: 'var(--navy-light)',
       borderTop: '1px solid rgba(0,102,255,0.12)',
       position: 'relative',
@@ -60,7 +60,7 @@ export default function Footer() {
       }} />
 
       {/* Main row */}
-      <div style={{
+      <div className="footer-grid" style={{
         padding: '3rem 8% 2.5rem',
         display: 'grid',
         gridTemplateColumns: '1fr auto 1fr',
@@ -174,7 +174,7 @@ export default function Footer() {
         </div>
 
         {/* Right: nav + contact */}
-        <div style={{ textAlign: 'right' }}>
+        <div className="footer-right" style={{ textAlign: 'right' }}>
           <nav style={{ marginBottom: '1.8rem' }}>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.55rem', alignItems: 'flex-end' }}>
               {NAV_LINKS.map(({ href, label }) => (

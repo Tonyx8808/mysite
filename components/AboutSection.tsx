@@ -9,7 +9,7 @@ const STATS = [
 
 export default function AboutSection() {
   return (
-    <section id="about" style={{ background: 'var(--navy-light)', padding: '120px 8%', position: 'relative', overflow: 'hidden' }}>
+    <section id="about" className="about-section" style={{ background: 'var(--navy-light)', padding: '120px 8%', position: 'relative', overflow: 'hidden' }}>
       <div className="bg-grid" />
 
       {/* Glow accent */}
@@ -22,7 +22,7 @@ export default function AboutSection() {
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Header */}
-        <div className="reveal-up" style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '5rem' }}>
+        <div className="reveal-up about-header" style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '5rem' }}>
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.72rem', color: 'var(--blue-bright)', letterSpacing: '0.25em' }}>01</span>
           <h2 style={{
             fontFamily: 'var(--font-syne)', fontWeight: 700,
@@ -32,10 +32,10 @@ export default function AboutSection() {
         </div>
 
         {/* Grid */}
-        <div style={{
+        <div className="about-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'minmax(260px, 320px) 1fr',
-          gap: '6rem',
+          gap: 'clamp(2rem, 4vw, 4rem)',
           alignItems: 'center',
         }}>
           {/* Portrait — logo2 */}

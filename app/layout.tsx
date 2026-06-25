@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Syne, Space_Mono, DM_Sans } from 'next/font/google'
-// @ts-ignore
+// @ts-ignore: allow side-effect CSS import in Next.js app directory
 import './globals.css'
-import MeshBackground from '@/components/Meshbackground'
 import CookieBanner from '@/components/CookieBanner'
 
 const syne = Syne({
@@ -28,14 +27,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="it" className={`${syne.variable} ${spaceMono.variable} ${dmSans.variable}`}>
+    <html
+      lang="it"
+      className={`${syne.variable} ${spaceMono.variable} ${dmSans.variable}`}
+    >
       <body>
-        
         {/* Background Spline globale */}
         <div className="global-spline-bg">
           <iframe
             src="https://my.spline.design/untitled-f680ea749fc30deeb5eff5a8b15b2f63"
-            frameBorder="0"
+            title="background"
+            style={{ border: 'none' }}
           />
         </div>
 

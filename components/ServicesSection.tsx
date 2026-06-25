@@ -47,13 +47,46 @@ export default function ServicesSection() {
   }
 
   return (
-    <section id="services" className="services-section" style={{
+    <section id="services" style={{
       background: 'var(--navy)',
-      padding: '120px clamp(1rem, 4vw, 8%)',
+      padding: '120px 8%',
       position: 'relative',
       overflow: 'hidden',
     }}>
-      <div className="bg-grid" />
+      <style>{`
+        .services-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 1.5px;
+          background: rgba(0,102,255,0.1);
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+        }
+        @media (max-width: 1024px) {
+          .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (max-width: 600px) {
+          .services-grid {
+            grid-template-columns: 1fr;
+          }
+          #services {
+            padding: 80px 5% !important;
+          }
+          .services-card-inner {
+            padding: 2rem 1.5rem !important;
+          }
+          .services-header {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.5rem !important;
+          }
+          .services-header-right {
+            text-align: left !important;
+          }
+        }
+      `}</style>
 
       {/* Big decorative background number */}
       <div style={{
@@ -61,7 +94,7 @@ export default function ServicesSection() {
         top: '50%', left: '50%',
         transform: 'translate(-50%, -50%)',
         fontFamily: 'var(--font-syne)',
-        fontSize: 'clamp(200px, 30vw, 380px)',
+        fontSize: 'clamp(120px, 30vw, 380px)',
         fontWeight: 800,
         color: 'transparent',
         WebkitTextStroke: '1px rgba(0,102,255,0.05)',
@@ -93,7 +126,7 @@ export default function ServicesSection() {
               fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-1px',
             }}>Cosa Faccio</h2>
           </div>
-          <p style={{
+          <p className="services-header-right" style={{
             fontFamily: 'var(--font-space-mono)', fontSize: '0.72rem',
             color: 'var(--muted)', letterSpacing: '0.05em',
             maxWidth: '320px', textAlign: 'right', lineHeight: 1.7,
@@ -103,26 +136,19 @@ export default function ServicesSection() {
         </div>
 
         {/* Grid */}
-        <div className="services-grid" style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-          gap: '1.5px',
-          background: 'rgba(0,102,255,0.1)',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-        }}>
+        <div className="services-grid">
           {SERVICES.map((svc, i) => {
             const isHovered = hovered === i
             return (
               <div
                 key={i}
-                className="reveal-up service-card-wrap"
+                className="reveal-up"
                 style={{ transitionDelay: `${i * 0.07}s` }}
                 onMouseEnter={() => { setHovered(i); setTilt({ x: 0, y: 0 }) }}
                 onMouseLeave={() => { setHovered(null); setTilt({ x: 0, y: 0 }) }}
                 onMouseMove={(e) => handleMouseMove(e, i)}
               >
-                <div style={{
+                <div className="services-card-inner" style={{
                   position: 'relative',
                   background: isHovered ? 'var(--navy-light)' : 'var(--navy-card)',
                   padding: '3rem 2.5rem',
@@ -145,7 +171,7 @@ export default function ServicesSection() {
                     position: 'absolute',
                     top: '-0.5rem', right: '1.5rem',
                     fontFamily: 'var(--font-syne)',
-                    fontSize: '6rem',
+                    fontSize: 'clamp(4rem, 6vw, 6rem)',
                     fontWeight: 800,
                     color: 'transparent',
                     WebkitTextStroke: isHovered ? '1px rgba(0,102,255,0.2)' : '1px rgba(255,255,255,0.04)',
@@ -227,13 +253,12 @@ export default function ServicesSection() {
                   <div style={{
                     position: 'absolute',
                     bottom: '1.8rem', right: '2rem',
-                    fontFamily: 'var(--font-mono)',
                     fontSize: '1.1rem',
                     color: 'var(--blue-bright)',
                     opacity: isHovered ? 1 : 0,
                     transform: isHovered ? 'translate(0, 0)' : 'translate(-8px, 8px)',
                     transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)',
-                  }}>↗</div>
+                  }}>{'\u2197'}</div>
 
                 </div>
               </div>
@@ -278,7 +303,7 @@ export default function ServicesSection() {
             }}
           >
             <span>Parliamo del tuo progetto</span>
-            <span style={{ fontSize: '1rem' }}>→</span>
+            <span style={{ fontSize: '1rem' }}>{'\u2192'}</span>
           </a>
         </div>
 

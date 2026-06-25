@@ -1,16 +1,47 @@
 import Image from 'next/image'
 
 const TAGS = ['Modularità creativa', 'Precisione visiva', 'Esperienza fluida', 'Sicurezza informatica']
-const STATS = [
-  { target: 5, label: 'Anni esperienza', sub: 'Dal codice al design, costantemente in evoluzione.' },
-  { target: 40, label: 'Progetti completati', sub: 'Ogni lavoro consegnato con cura artigianale.' },
-  { target: 6, label: 'Tecnologie core', sub: 'Stack moderno, codice pulito, zero compromessi.' },
-]
 
 export default function AboutSection() {
   return (
-    <section id="about" className="about-section" style={{ background: 'var(--navy-light)', padding: '120px clamp(1rem, 4vw, 8%)', position: 'relative', overflow: 'hidden' }}>
-      <div className="bg-grid" />
+    <section id="about" style={{ background: 'var(--navy-light)', padding: '120px 8%', position: 'relative', overflow: 'hidden' }}>
+      <style>{`
+        .about-grid {
+          display: grid;
+          grid-template-columns: minmax(260px, 320px) 1fr;
+          gap: 6rem;
+          align-items: center;
+        }
+        .about-portrait {
+          display: flex;
+          justify-content: center;
+        }
+        @media (max-width: 900px) {
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+          }
+          .about-portrait {
+            order: -1;
+          }
+        }
+        @media (max-width: 640px) {
+          #about {
+            padding: 80px 5% !important;
+          }
+          .about-portrait-size {
+            width: 200px !important;
+            height: 200px !important;
+          }
+          .about-portrait-inner {
+            width: 200px !important;
+            height: 200px !important;
+          }
+          .about-manifesto {
+            padding: 1.2rem 1.4rem !important;
+          }
+        }
+      `}</style>
 
       {/* Glow accent */}
       <div style={{
@@ -22,26 +53,18 @@ export default function AboutSection() {
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Header */}
-        <div className="reveal-up about-header" style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '5rem' }}>
+        <div className="reveal-up" style={{ display: 'flex', alignItems: 'baseline', gap: '1.5rem', marginBottom: '5rem' }}>
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.72rem', color: 'var(--blue-bright)', letterSpacing: '0.25em' }}>01</span>
-          <h2 style={{
-            fontFamily: 'var(--font-syne)', fontWeight: 700,
-            fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-1px',
-          }}
+          <h2 style={{ fontFamily: 'var(--font-syne)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-1px' }}
             className="chrome-text">Chi Sono</h2>
         </div>
 
         {/* Grid */}
-        <div className="about-grid" style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(260px, 320px) 1fr',
-          gap: 'clamp(2rem, 4vw, 4rem)',
-          alignItems: 'center',
-        }}>
-          {/* Portrait — logo2 */}
-          <div className="reveal-3d" style={{ display: 'flex', justifyContent: 'center' }}>
-            <div style={{ position: 'relative', width: 'min(280px, 80vw)', aspectRatio: '1 / 1' }}>
-              {/* Pulse rings */}
+        <div className="about-grid">
+
+          {/* Portrait */}
+          <div className="about-portrait reveal-3d">
+            <div className="about-portrait-size" style={{ position: 'relative', width: '280px', height: '280px' }}>
               {[0, 1, 2].map((i) => (
                 <div key={i} className="ring-pulse" style={{
                   position: 'absolute',
@@ -51,39 +74,28 @@ export default function AboutSection() {
                   animationDelay: `${i * -1.5}s`,
                 }} />
               ))}
-              {/* Logo2 image — circular */}
-             <div style={{
-  position: 'relative',
-  width: '280px',
-  height: '280px'
-}}>
-  <div className="luminous-ring"></div>
-
-  <div style={{
-    width: '100%',
-    height: '100%',
-    borderRadius: '50%',
-    overflow: 'hidden',
-    border: '2px solid rgba(0,102,255,0.4)',
-    boxShadow: '0 0 50px rgba(0,102,255,0.3), 0 0 100px rgba(0,102,255,0.1)',
-    position: 'relative',
-    zIndex: 2
-  }}>
-    <Image
-      src="/logo2.png"
-      alt="Antonio Russo"
-      width={280}
-      height={280}
-      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-    />
-  </div>
-</div>
-
+              <div className="about-portrait-inner" style={{ position: 'relative', width: '280px', height: '280px' }}>
+                <div className="luminous-ring" />
+                <div style={{
+                  width: '100%', height: '100%',
+                  borderRadius: '50%', overflow: 'hidden',
+                  border: '2px solid rgba(0,102,255,0.4)',
+                  boxShadow: '0 0 50px rgba(0,102,255,0.3), 0 0 100px rgba(0,102,255,0.1)',
+                  position: 'relative', zIndex: 2,
+                }}>
+                  <Image
+                    src="/logo2.png"
+                    alt="Antonio Russo"
+                    width={280}
+                    height={280}
+                    style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                  />
+                </div>
+              </div>
               {/* Tag */}
               <div style={{
                 position: 'absolute', bottom: '-20px', left: '50%',
                 transform: 'translateX(-50%)',
-                maxWidth: 'calc(100% - 1rem)',
                 fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem',
                 color: 'var(--blue-neon)',
                 background: 'var(--navy-card)',
@@ -103,7 +115,7 @@ export default function AboutSection() {
           <div className="reveal-up">
             <p style={{
               fontFamily: 'var(--font-syne)',
-              fontSize: 'clamp(1.3rem, 2.5vw, 1.85rem)',
+              fontSize: 'clamp(1.1rem, 2.5vw, 1.85rem)',
               fontWeight: 600,
               color: 'var(--white)',
               marginBottom: '1.4rem',
@@ -147,7 +159,7 @@ export default function AboutSection() {
             </div>
 
             {/* Manifesto */}
-            <div style={{
+            <div className="about-manifesto" style={{
               marginTop: '2.5rem',
               padding: '1.5rem 2rem',
               borderLeft: '2px solid rgba(0,102,255,0.5)',

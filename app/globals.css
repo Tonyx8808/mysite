@@ -505,3 +505,75 @@ section {
   border: none;
   filter: saturate(1.2) brightness(1.1);
 }
+
+
+/*RESPONSIVE GLOBAL PATCH*/
+
+
+/* ── Cursore custom: disabilita su touch ── */
+@media (hover: none) and (pointer: coarse) {
+  body { cursor: auto; }
+  #cursor, #cursor-dot { display: none !important; }
+}
+
+/* ── Sezioni: padding fluido ── */
+section {
+  padding: clamp(60px, 10vw, 120px) clamp(4%, 8%, 8%);
+}
+
+/* ── Typography fluid ── */
+.hero-title {
+  font-size: clamp(2.2rem, 10vw, 7rem);
+}
+
+/* ── Navbar: rimuovi classe vecchia che nascondeva i link ── */
+@media (max-width: 1024px) {
+  .nav-links { display: none; } /* già gestita dal componente Navbar */
+}
+
+/* ── Marquee: rallenta su mobile ── */
+@media (max-width: 600px) {
+  .marquee-track {
+    animation-duration: 18s;
+    gap: 1.5rem;
+  }
+}
+
+/* ── Scroll reveal: riduci l'offset su mobile ── */
+@media (max-width: 600px) {
+  .reveal-3d {
+    transform: perspective(900px) rotateX(10deg) translateY(30px);
+  }
+  .reveal-up {
+    transform: translateY(24px);
+  }
+}
+
+/* ── Skill bars label: tronca su mobile stretto ── */
+@media (max-width: 400px) {
+  .skills-bar-row span:first-child {
+    font-size: 0.58rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* ── Footer bottom bar ── */
+@media (max-width: 600px) {
+  .footer-bottom {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}
+
+/* ── Immagini: evita overflow ── */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Spline bg: nascondi su mobile per performance ── */
+@media (max-width: 600px) {
+  .global-spline-bg {
+    display: none;
+  }
+}

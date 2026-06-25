@@ -6,6 +6,37 @@ const FRAME_COUNT = 240
 const framePath = (i: number) =>
   `/heroimg/ezgif-frame-${String(i).padStart(3, '0')}.jpg`
 
+// ── Singleton preload cache — sopravvive ai remount (StrictMode, navigazione) ──
+const _frames: string[] = Array.from({ length: FRAME_COUNT }, (_, i) => framePath(i + 1))
+const _loaded = new Set<number>()
+let   _listeners: Array<(pct: number, done: boolean) => void> = []
+let   _started = false
+
+function subscribePreload(cb: (pct: number, done: boolean) => void) {
+  // Se già completo, notifica subito senza ripartire
+  if (_loaded.size === FRAME_COUNT) { cb(1, true); return () => {} }
+
+  _listeners.push(cb)
+
+  if (!_started) {
+    _started = true
+    _frames.forEach((src, i) => {
+      const img = new Image()
+      img.src = src
+      img.onload = img.onerror = () => {
+        if (_loaded.has(i)) return        // già contato (strict mode double-fire)
+        _loaded.add(i)
+        const pct  = _loaded.size / FRAME_COUNT
+        const done = _loaded.size === FRAME_COUNT
+        _listeners.forEach(fn => fn(pct, done))
+        if (done) _listeners = []         // libera memoria
+      }
+    })
+  }
+
+  return () => { _listeners = _listeners.filter(fn => fn !== cb) }
+}
+
 const DIALOGUES = [
   {
     id: 'd1', show: 0.08, hide: 0.38,
@@ -38,8 +69,6 @@ export default function HeroScroll() {
   const barRef      = useRef<HTMLDivElement>(null)
   const pctRef      = useRef<HTMLSpanElement>(null)
 
-  const framesRef    = useRef<string[]>([])
-  const loadedSet    = useRef<Set<number>>(new Set())
   const currentFrame = useRef(0)
   const rafRef       = useRef<number | null>(null)
 
@@ -47,8 +76,8 @@ export default function HeroScroll() {
   const wrapTopRef    = useRef(0)
   const wrapHeightRef = useRef(0)
 
-  const [loadPct, setLoadPct]           = useState(0)
-  const [ready, setReady]               = useState(false)
+  const [loadPct, setLoadPct]           = useState(() => _loaded.size / FRAME_COUNT)
+  const [ready, setReady]               = useState(() => _loaded.size === FRAME_COUNT)
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set())
 
   // ── Cache wrapper metrics (recalculate on resize / orientation change) ─────
@@ -74,19 +103,11 @@ export default function HeroScroll() {
     }
   }, [])
 
-  // ── Preload frames ─────────────────────────────────────────────────────────
+  // ── Preload frames — singleton, non riparte su remount ────────────────────
   useEffect(() => {
-    let done = 0
-    framesRef.current = Array.from({ length: FRAME_COUNT }, (_, i) => framePath(i + 1))
-    framesRef.current.forEach((src, i) => {
-      const img = new Image()
-      img.src = src
-      img.onload = img.onerror = () => {
-        loadedSet.current.add(i)
-        done++
-        setLoadPct(done / FRAME_COUNT)
-        if (done === FRAME_COUNT) setReady(true)
-      }
+    return subscribePreload((pct, done) => {
+      setLoadPct(pct)
+      if (done) setReady(true)
     })
   }, [])
 
@@ -106,7 +127,7 @@ export default function HeroScroll() {
         const idx = Math.min(FRAME_COUNT - 1, Math.floor(prog * FRAME_COUNT))
         if (idx !== currentFrame.current && imgRef.current) {
           currentFrame.current = idx
-          imgRef.current.src   = framesRef.current[idx]
+          imgRef.current.src   = _frames[idx]
         }
 
         if (heroTextRef.current) {
@@ -229,7 +250,7 @@ export default function HeroScroll() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={imgRef}
-          src={framePath(1)}
+          src={_frames[0]}
           alt="" aria-hidden
           className="hero-frame-img"
           style={{

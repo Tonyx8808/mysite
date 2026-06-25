@@ -14,14 +14,16 @@ import ContactSection from '@/components/ContactSection'
 import Footer from '@/components/Footer'
 
 import {
-  useScrollReveal,
-  useParallax,
-  useHeroTilt,
-  useCustomCursor,
-  useSkillBars,
-  useCounters,
-  useOrbitTilt,
-} from '@/hooks/useScrollReveal'
+  initScrollReveal,
+  initParallax,
+  initHeroTilt,
+  initCustomCursor,
+  initSkillBars,
+  initCounters,
+  initOrbitTilt,
+} from '@/hooks/effects'
+
+
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false)
@@ -32,16 +34,17 @@ export default function Home() {
 
   // Init hooks SOLO dopo che il loader è completato
   useEffect(() => {
-    if (!loaded) return
+  if (!loaded) return
 
-    useCustomCursor()
-    useScrollReveal()
-    useParallax()
-    useHeroTilt()
-    useSkillBars()
-    useCounters()
-    useOrbitTilt()
-  }, [loaded])
+  initCustomCursor()
+  initScrollReveal()
+  initParallax()
+  initHeroTilt()
+  initSkillBars()
+  initCounters()
+  initOrbitTilt()
+}, [loaded])
+
 
   return (
     <>

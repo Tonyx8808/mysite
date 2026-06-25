@@ -192,8 +192,17 @@ export default function HeroScroll() {
 
         /* ── Hero title ── */
         .hero-title {
-          font-size: clamp(2.8rem, 14vw, 7rem);
+          font-size: clamp(2rem, 13vw, 7rem);
           letter-spacing: -1px;
+          width: 100%;
+        }
+        /* Su mobile stretto "ANTONIO" (7 chars @ Syne 800) fuoriesce:
+           abbassa il font fino a che entra nel padding container */
+        @media (max-width: 767px) {
+          .hero-title {
+            font-size: clamp(1.8rem, 10.5vw, 4rem);
+            letter-spacing: -0.5px;
+          }
         }
 
         /* ── Big text ── */
@@ -344,6 +353,7 @@ export default function HeroScroll() {
             lineHeight: 0.92,
             color: 'var(--white)',
             textShadow: '0 2px 32px rgba(0,0,0,0.95)', margin: 0,
+            maxWidth: '100%', overflow: 'hidden',
           }}>
             ANTONIO<br />
             <span style={{

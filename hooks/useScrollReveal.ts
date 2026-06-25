@@ -1,8 +1,11 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 export function useScrollReveal() {
   useEffect(() => {
+    const elements = document.querySelectorAll('.reveal-3d, .reveal-up')
+    if (!elements.length) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -15,9 +18,7 @@ export function useScrollReveal() {
       { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
     )
 
-    const elements = document.querySelectorAll('.reveal-3d, .reveal-up')
     elements.forEach((el) => observer.observe(el))
-
     return () => observer.disconnect()
   }, [])
 }
@@ -25,7 +26,8 @@ export function useScrollReveal() {
 export function useParallax() {
   useEffect(() => {
     const glows = document.querySelectorAll<HTMLElement>('.hero-glow')
-    
+    if (!glows.length) return
+
     const handler = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 2
       const y = (e.clientY / window.innerHeight - 0.5) * 2
@@ -34,6 +36,7 @@ export function useParallax() {
         g.style.transform = `translate(${x * factor}px, ${y * factor}px)`
       })
     }
+
     window.addEventListener('mousemove', handler, { passive: true })
     return () => window.removeEventListener('mousemove', handler)
   }, [])
@@ -43,6 +46,7 @@ export function useHeroTilt() {
   useEffect(() => {
     const title = document.querySelector<HTMLElement>('.hero-title')
     if (!title) return
+
     const handler = (e: MouseEvent) => {
       const cx = window.innerWidth / 2
       const cy = window.innerHeight / 2
@@ -50,6 +54,7 @@ export function useHeroTilt() {
       const dy = (e.clientY - cy) / cy
       title.style.transform = `perspective(1400px) rotateX(${dy * -4}deg) rotateY(${dx * 4}deg)`
     }
+
     document.addEventListener('mousemove', handler, { passive: true })
     return () => document.removeEventListener('mousemove', handler)
   }, [])
@@ -70,6 +75,7 @@ export function useCustomCursor() {
       cursor.style.left = mouseX + 'px'
       cursor.style.top = mouseY + 'px'
     }
+
     document.addEventListener('mousemove', moveHandler, { passive: true })
 
     const animateDot = () => {
@@ -79,6 +85,7 @@ export function useCustomCursor() {
       dot.style.top = dotY + 'px'
       rafId = requestAnimationFrame(animateDot)
     }
+
     rafId = requestAnimationFrame(animateDot)
 
     return () => {
@@ -90,6 +97,9 @@ export function useCustomCursor() {
 
 export function useSkillBars() {
   useEffect(() => {
+    const el = document.querySelector('.skills-bars')
+    if (!el) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -107,41 +117,47 @@ export function useSkillBars() {
       },
       { threshold: 0.3 }
     )
-    const el = document.querySelector('.skills-bars')
-    if (el) observer.observe(el)
+
+    observer.observe(el)
     return () => observer.disconnect()
   }, [])
 }
 
 export function useCounters() {
   useEffect(() => {
+    const el = document.querySelector('.about-stats')
+    if (!el) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const nums = entry.target.querySelectorAll<HTMLElement>('.stat-num')
+
             nums.forEach((num) => {
               const target = parseInt(num.dataset.target || '0')
               const duration = 1600
               const start = Date.now()
+
               const tick = () => {
                 const elapsed = Date.now() - start
                 const progress = Math.min(elapsed / duration, 1)
                 const eased = 1 - Math.pow(1 - progress, 3)
                 num.textContent = Math.round(eased * target).toString()
                 if (progress < 1) requestAnimationFrame(tick)
-                else num.textContent = target.toString()
               }
+
               tick()
             })
+
             observer.unobserve(entry.target)
           }
         })
       },
       { threshold: 0.5 }
     )
-    const el = document.querySelector('.about-stats')
-    if (el) observer.observe(el)
+
+    observer.observe(el)
     return () => observer.disconnect()
   }, [])
 }
@@ -150,12 +166,14 @@ export function useOrbitTilt() {
   useEffect(() => {
     const orbit = document.querySelector<HTMLElement>('.skills-orbit')
     if (!orbit) return
+
     const handler = () => {
       const rect = orbit.getBoundingClientRect()
       const relY = (rect.top + rect.height / 2) / window.innerHeight
       const offset = (relY - 0.5) * 28
       orbit.style.transform = `perspective(900px) rotateX(${offset}deg) rotateY(${offset * 0.35}deg)`
     }
+
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])

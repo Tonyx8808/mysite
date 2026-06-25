@@ -9,7 +9,7 @@ const STATS = [
 
 export default function AboutSection() {
   return (
-    <section id="about" className="about-section" style={{ background: 'var(--navy-light)', padding: '120px 8%', position: 'relative', overflow: 'hidden' }}>
+    <section id="about" className="about-section" style={{ background: 'var(--navy-light)', padding: '120px clamp(1rem, 4vw, 8%)', position: 'relative', overflow: 'hidden' }}>
       <div className="bg-grid" />
 
       {/* Glow accent */}
@@ -40,7 +40,7 @@ export default function AboutSection() {
         }}>
           {/* Portrait — logo2 */}
           <div className="reveal-3d" style={{ display: 'flex', justifyContent: 'center' }}>
-            <div style={{ position: 'relative', width: '280px', height: '280px' }}>
+            <div style={{ position: 'relative', width: 'min(280px, 80vw)', aspectRatio: '1 / 1' }}>
               {/* Pulse rings */}
               {[0, 1, 2].map((i) => (
                 <div key={i} className="ring-pulse" style={{
@@ -83,6 +83,7 @@ export default function AboutSection() {
               <div style={{
                 position: 'absolute', bottom: '-20px', left: '50%',
                 transform: 'translateX(-50%)',
+                maxWidth: 'calc(100% - 1rem)',
                 fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem',
                 color: 'var(--blue-neon)',
                 background: 'var(--navy-card)',

@@ -61,7 +61,7 @@ export default function Footer() {
 
       {/* Main row */}
       <div className="footer-grid" style={{
-        padding: '3rem 8% 2.5rem',
+        padding: '3rem clamp(1rem, 4vw, 8%) 2.5rem',
         display: 'grid',
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'start',
@@ -210,7 +210,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{
         borderTop: '1px solid rgba(0,102,255,0.08)',
-        padding: '1rem 8%',
+        padding: '1rem clamp(1rem, 4vw, 8%)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

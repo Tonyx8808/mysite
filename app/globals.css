@@ -316,10 +316,11 @@ body:has(button:hover) #cursor {
 
 /* ══ SECTION BASE ══ */
 section {
-  padding: 120px 8%;
+  padding: clamp(80px, 10vw, 120px) clamp(1rem, 4vw, 8%);
   position: relative;
 }
 @media (max-width: 1024px) {
+  .about-grid { grid-template-columns: 1fr; gap: clamp(1.75rem, 3vw, 2.5rem); }
   .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .skills-layout { grid-template-columns: 1fr; gap: 2.5rem; }
   .skills-detail-panel { position: static; }
@@ -335,9 +336,22 @@ section {
   .hero-progress-meta { margin: 0 1rem !important; padding-bottom: 0.75rem !important; flex-wrap: wrap; gap: 0.35rem; }
 }
 @media (max-width: 768px) {
-  section { padding: 80px 5%; }
-  .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  section { padding: 80px clamp(1rem, 4vw, 1.5rem); }
+  .about-grid { gap: 2.5rem; }
   .services-grid { grid-template-columns: 1fr; }
+  .about-header,
+  .services-header,
+  .contact-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 3rem;
+  }
+  .services-header p,
+  .contact-header p {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
   .service-card { padding: 1.6rem 1.25rem !important; }
   .skill-tile { padding: 1.25rem 1rem !important; min-height: 150px !important; }
   .skills-bar-row { grid-template-columns: 1fr !important; gap: 0.45rem !important; }
@@ -355,6 +369,7 @@ section {
   .hero-top-readout span { font-size: 0.54rem !important; }
   .hero-text-shell { padding: 0 1rem 2.5rem !important; gap: 0.9rem !important; }
   .hero-big-text { bottom: 3.2rem !important; gap: 0.7rem !important; }
+  .hero-progress-meta { font-size: 0.5rem !important; gap: 0.25rem !important; }
   .skill-tile { min-height: 135px !important; }
 }
 

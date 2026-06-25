@@ -204,7 +204,7 @@ export default function Navbar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: scrolled ? '0.55rem 5%' : '1rem 5%',
+            padding: scrolled ? '0.55rem clamp(1rem, 4vw, 5%)' : '1rem clamp(1rem, 4vw, 5%)',
             position: 'relative',
           }}
         >

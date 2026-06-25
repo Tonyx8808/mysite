@@ -103,7 +103,7 @@ export default function ContactSection() {
     <section
       id="contact"
       className="contact-section"
-      style={{ padding: '120px 8%', position: 'relative', overflow: 'hidden' }}
+      style={{ padding: '120px clamp(1rem, 4vw, 8%)', position: 'relative', overflow: 'hidden' }}
     >
       {/* Glow ambientale */}
       <div style={{

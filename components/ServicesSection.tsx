@@ -49,7 +49,7 @@ export default function ServicesSection() {
   return (
     <section id="services" className="services-section" style={{
       background: 'var(--navy)',
-      padding: '120px 8%',
+      padding: '120px clamp(1rem, 4vw, 8%)',
       position: 'relative',
       overflow: 'hidden',
     }}>

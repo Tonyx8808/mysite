@@ -49,6 +49,7 @@ export default function HeroScroll() {
   const [loadPct, setLoadPct]             = useState(0)
   const [ready, setReady]                 = useState(false)
   const [visibleCards, setVisibleCards]   = useState<Set<string>>(new Set())
+  const [isMobile, setIsMobile]           = useState(false)
 
   // ── Preload frames ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -67,8 +68,33 @@ export default function HeroScroll() {
     })
   }, [])
 
+  useEffect(() => {
+    const updateViewportMode = () => {
+      setIsMobile(window.innerWidth < 900 || window.matchMedia('(pointer: coarse)').matches)
+    }
+
+    updateViewportMode()
+    window.addEventListener('resize', updateViewportMode)
+    return () => window.removeEventListener('resize', updateViewportMode)
+  }, [])
+
   // ── Scroll → frame swap ────────────────────────────────────────────────────
   useEffect(() => {
+    if (isMobile) {
+      if (heroTextRef.current) {
+        heroTextRef.current.style.opacity = '1'
+        heroTextRef.current.style.transform = 'translateY(0px)'
+      }
+      if (bigTextRef.current) {
+        bigTextRef.current.style.opacity = '1'
+        bigTextRef.current.style.transform = 'translateY(0px)'
+      }
+      if (barRef.current) barRef.current.style.transform = 'scaleX(0)'
+      if (pctRef.current) pctRef.current.textContent = '0.0%'
+      setVisibleCards(new Set())
+      return
+    }
+
     const onScroll = () => {
       if (rafRef.current) return
       rafRef.current = requestAnimationFrame(() => {
@@ -120,20 +146,21 @@ export default function HeroScroll() {
       window.removeEventListener('scroll', onScroll)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [])
+  }, [isMobile])
 
   // ─────────────────────────────────────────────────────────────────────────
   return (
     <div
       ref={wrapRef}
-      className="hero-scroll-wrap"
-      style={{ position: 'relative' }}
+      className={`hero-scroll-wrap${isMobile ? ' is-mobile' : ''}`}
+      style={{ position: 'relative', height: isMobile ? 'auto' : undefined }}
     >
       {/* STICKY VIEWPORT */}
       <div className="hero-sticky-viewport" style={{
-        position: 'sticky',
+        position: isMobile ? 'relative' : 'sticky',
         top: 0,
-        height: '100vh',
+        height: isMobile ? '100svh' : '100vh',
+        minHeight: '100svh',
         width: '100%',
         marginLeft: 0,
         overflow: 'hidden',
@@ -187,6 +214,7 @@ export default function HeroScroll() {
           pointerEvents: 'none',
           position: 'absolute', left: '2.5rem', top: '5.5rem', zIndex: 10,
           display: 'flex', alignItems: 'center', gap: '0.6rem',
+          flexWrap: 'wrap', maxWidth: 'min(90vw, 420px)',
         }}>
           <div style={{ height: '1px', width: '2rem', background: 'rgba(0,102,255,0.6)' }} />
           <span style={{
@@ -200,6 +228,7 @@ export default function HeroScroll() {
           pointerEvents: 'none',
           position: 'absolute', right: '2.5rem', top: '5.5rem', zIndex: 10,
           display: 'flex', alignItems: 'center', gap: '0.75rem',
+          flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: 'min(90vw, 320px)',
         }}>
           <span style={{
             fontFamily: 'var(--font-space-mono)', fontSize: '0.62rem',
@@ -222,6 +251,7 @@ export default function HeroScroll() {
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
           gap: '1.2rem', padding: '0 2.5rem 4.5rem',
           transition: 'opacity 60ms linear, transform 60ms linear',
+          maxWidth: '100%',
         }}>
           {/* Badge */}
           <div style={{
@@ -240,7 +270,7 @@ export default function HeroScroll() {
 
           <h1 style={{
             fontFamily: 'var(--font-syne)', fontWeight: 800,
-            fontSize: 'clamp(2.8rem, 8vw, 7rem)',
+            fontSize: 'clamp(2.35rem, 8vw, 7rem)',
             lineHeight: 0.92, letterSpacing: '-2px',
             color: 'var(--white)',
             textShadow: '0 2px 32px rgba(0,0,0,0.95)', margin: 0,
@@ -267,7 +297,7 @@ export default function HeroScroll() {
           pointerEvents: 'none',
           position: 'absolute', bottom: '5rem', left: '2.5rem', zIndex: 10,
           display: 'flex', flexDirection: 'column', gap: '1rem',
-          maxWidth: '60%', opacity: 0,
+          maxWidth: 'min(60%, 620px)', opacity: 0,
           transition: 'opacity 60ms linear, transform 60ms linear',
         }}>
           <span style={{

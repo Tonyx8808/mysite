@@ -23,8 +23,6 @@ import {
   initOrbitTilt,
 } from '@/hooks/effects'
 
-
-
 export default function Home() {
   const [loaded, setLoaded] = useState(false)
 
@@ -32,30 +30,25 @@ export default function Home() {
     setLoaded(true)
   }, [])
 
-  // Init hooks SOLO dopo che il loader è completato
   useEffect(() => {
-  if (!loaded) return
+    if (!loaded) return
 
-  initCustomCursor()
-  initScrollReveal()
-  initParallax()
-  initHeroTilt()
-  initSkillBars()
-  initCounters()
-  initOrbitTilt()
-}, [loaded])
-
+    initCustomCursor()
+    initScrollReveal()
+    initParallax()
+    initHeroTilt()
+    initSkillBars()
+    initCounters()
+    initOrbitTilt()
+  }, [loaded])
 
   return (
     <>
-      {/* Cursor */}
       <div id="cursor" />
       <div id="cursor-dot" />
 
-      {/* Loader */}
       <Loader onDone={handleLoaderDone} />
 
-      {/* Main content */}
       <div
         style={{
           opacity: loaded ? 1 : 0,

@@ -1,8 +1,6 @@
 'use client'
 
-// ─────────────────────────────────────────────────────────────
-//  SCROLL REVEAL
-// ─────────────────────────────────────────────────────────────
+// SCROLL REVEAL
 export function initScrollReveal() {
   if (typeof window === 'undefined') return
 
@@ -24,9 +22,7 @@ export function initScrollReveal() {
   elements.forEach((el) => observer.observe(el))
 }
 
-// ─────────────────────────────────────────────────────────────
-//  PARALLAX GLOW
-// ─────────────────────────────────────────────────────────────
+// PARALLAX
 export function initParallax() {
   if (typeof window === 'undefined') return
 
@@ -45,9 +41,7 @@ export function initParallax() {
   window.addEventListener('mousemove', handler, { passive: true })
 }
 
-// ─────────────────────────────────────────────────────────────
-//  HERO TITLE TILT
-// ─────────────────────────────────────────────────────────────
+// HERO TILT
 export function initHeroTilt() {
   if (typeof window === 'undefined') return
 
@@ -65,9 +59,7 @@ export function initHeroTilt() {
   document.addEventListener('mousemove', handler, { passive: true })
 }
 
-// ─────────────────────────────────────────────────────────────
-//  CUSTOM CURSOR
-// ─────────────────────────────────────────────────────────────
+// CUSTOM CURSOR
 export function initCustomCursor() {
   if (typeof window === 'undefined') return
 
@@ -98,9 +90,7 @@ export function initCustomCursor() {
   rafId = requestAnimationFrame(animateDot)
 }
 
-// ─────────────────────────────────────────────────────────────
-//  SKILL BARS
-// ─────────────────────────────────────────────────────────────
+// SKILL BARS
 export function initSkillBars() {
   if (typeof window === 'undefined') return
 
@@ -128,9 +118,7 @@ export function initSkillBars() {
   observer.observe(el)
 }
 
-// ─────────────────────────────────────────────────────────────
-//  COUNTERS
-// ─────────────────────────────────────────────────────────────
+// COUNTERS
 export function initCounters() {
   if (typeof window === 'undefined') return
 
@@ -169,9 +157,7 @@ export function initCounters() {
   observer.observe(el)
 }
 
-// ─────────────────────────────────────────────────────────────
-//  ORBIT TILT
-// ─────────────────────────────────────────────────────────────
+// ORBIT TILT
 export function initOrbitTilt() {
   if (typeof window === 'undefined') return
 

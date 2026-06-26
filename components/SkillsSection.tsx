@@ -18,7 +18,7 @@ const SKILLS: Skill[] = [
   { label: 'CSS3',       icon: 'css3.png',            category: 'FRONTEND', level: 93, tag: 'Stile',           desc: 'Container queries, cascade layers, animazioni GPU-accelerate e sistemi di design token. CSS che scala senza specificity wars e si legge come prosa.' },
   { label: 'JavaScript', icon: 'javascript.png',      category: 'FRONTEND', level: 88, tag: 'Core',            desc: 'ES2024, pattern funzionali, Web APIs native e ottimizzazione delle performance. Nessuna dipendenza aggiunta se il browser lo fa già.' },
   { label: 'TypeScript', icon: 'typescript.png',      category: 'FRONTEND', level: 84, tag: 'Type Safety',     desc: 'Generics avanzati, utility types, discriminated unions e strict mode sempre attivo. Il tipo è documentazione: se compila, è corretto.' },
-  { label: 'React',      icon: 'icons8-react-40.png', category: 'FRONTEND', level: 86, tag: 'UI Framework',    desc: 'Architetture component-driven con hooks custom, Suspense, Server Components e pattern di composizione. Next.js App Router è il mio ambiente naturale.' },
+  { label: 'React',      icon: 'react.png', category: 'FRONTEND', level: 86, tag: 'UI Framework',    desc: 'Architetture component-driven con hooks custom, Suspense, Server Components e pattern di composizione. Next.js App Router è il mio ambiente naturale.' },
   { label: 'Tailwind',   icon: 'tailwindcss.png',     category: 'FRONTEND', level: 90, tag: 'Utility CSS',     desc: 'Design systems scalabili con token custom, varianti responsive e temi dinamici. Productivity x3 senza sacrificare la precisione pixel-perfect.' },
   { label: 'GSAP',       icon: 'gsap.png',            category: 'FRONTEND', level: 78, tag: 'Animazione',      desc: 'ScrollTrigger per storytelling on-scroll, timeline orchestrate e morphing SVG. Le animazioni che creo comunicano gerarchia, non distrazione.' },
   { label: 'Node.js',    icon: 'nodejs.png',          category: 'BACKEND',  level: 80, tag: 'Runtime',         desc: 'API REST e GraphQL con Express/Fastify, middleware pipeline, streaming e worker threads. Architetture event-driven che non bloccano mai il thread principale.' },
@@ -32,9 +32,14 @@ const SKILLS: Skill[] = [
   { label: 'SEO',        icon: 'seo.png',             category: 'STRUMENTI',level: 79, tag: 'Visibilità',      desc: 'Core Web Vitals, structured data, sitemap dinamiche e meta ottimizzati. Il codice migliore è inutile se Google non riesce a indicizzarlo.' },
 ]
 
+
 const CATEGORIES: Category[] = ['FRONTEND', 'BACKEND', 'STRUMENTI']
 
-
+const CENTER_ICON = {
+  FRONTEND: '/icon/frontend.png',
+  BACKEND: '/icon/backend.png',
+  STRUMENTI: '/icon/services.png'
+}
 
 const CARD_FEATURES: Record<Category, { title: string; body: string }[]> = {
   FRONTEND:  [
@@ -194,92 +199,253 @@ export default function SkillsSection() {
           animation: sk-node-in 0.55s cubic-bezier(0.34,1.4,0.64,1) forwards;
           cursor: pointer; z-index: 2;
         }
-        .sk-node-box {
-          width: 62px; height: 62px; border-radius: 15px;
-          background: rgba(255,255,255,0.92);
-          border: 1px solid rgba(255,255,255,0.2);
-          display: flex; align-items: center; justify-content: center;
-          backdrop-filter: blur(14px);
-          transition: border-color 0.35s cubic-bezier(0.16,1,0.3,1),
-                      box-shadow   0.35s cubic-bezier(0.16,1,0.3,1),
-                      transform    0.4s  cubic-bezier(0.34,1.4,0.64,1),
-                      background   0.35s cubic-bezier(0.16,1,0.3,1);
-        }
-        .sk-node.active-node .sk-node-box,
-        .sk-node:hover .sk-node-box {
-          border-color: var(--blue-bright);
-          box-shadow: 0 0 32px rgba(45,143,255,0.35), 0 0 10px rgba(45,143,255,0.18);
-          transform: scale(1.2) translateY(-4px);
-          background: #ffffff;
-        }
-        .sk-node-label {
-          position: absolute; top: calc(100% + 9px); left: 50%;
-          transform: translateX(-50%);
-          font-family: 'Space Mono', monospace; font-size: 0.54rem;
-          letter-spacing: 0.07em; color: var(--muted); white-space: nowrap;
-          transition: color 0.3s, opacity 0.3s; opacity: 0.6;
-        }
-        .sk-node.active-node .sk-node-label,
-        .sk-node:hover .sk-node-label { color: var(--chrome-light); opacity: 1; }
+      .sk-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: sk-node-in 0.55s cubic-bezier(0.34,1.4,0.64,1) forwards;
+  cursor: pointer;
+  z-index: 2;
+}
 
-        @keyframes sk-halo-pulse {
-          0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 0.35; }
-          100% { transform: translate(-50%,-50%) scale(1.6); opacity: 0; }
-        }
-        .sk-halo {
-          position: absolute; top: 50%; left: 50%;
-          width: 62px; height: 62px; border-radius: 50%;
-          border: 1px solid var(--blue-bright); pointer-events: none;
-          animation: sk-halo-pulse 1.6s cubic-bezier(0.4,0,0.6,1) infinite;
-        }
+.sk-node-box {
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
 
-        @keyframes sk-line-dash { to { stroke-dashoffset: -20; } }
-        .sk-line-active { animation: sk-line-dash 0.8s linear infinite; }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-        @keyframes sk-spin-cw  { to { transform: rotate(360deg); } }
-        @keyframes sk-spin-ccw { to { transform: rotate(-360deg); } }
-        .sk-ring-outer {
-          position: absolute; inset: -22px; border-radius: 50%;
-          border: 1px dashed rgba(45,143,255,0.22);
-          animation: sk-spin-cw 22s linear infinite; pointer-events: none;
-        }
-        .sk-ring-inner {
-          position: absolute; inset: -9px; border-radius: 50%;
-          border: 1px solid rgba(0,102,255,0.12);
-          animation: sk-spin-ccw 13s linear infinite; pointer-events: none;
-        }
+  background:
+    linear-gradient(
+      180deg,
+      rgba(24,33,54,.96) 0%,
+      rgba(13,20,36,.98) 100%
+    );
 
-        @keyframes sk-hex-pulse {
-          0%,100% { filter: drop-shadow(0 0 6px rgba(0,102,255,0.4)); }
-          50%     { filter: drop-shadow(0 0 18px rgba(45,143,255,0.8)); }
-        }
-        .sk-hex-svg { animation: sk-hex-pulse 3s ease-in-out infinite; }
+  border: 1px solid rgba(45,143,255,.15);
 
-        .sk-panel {
-          background: var(--navy-card); border: 1px solid var(--border);
-          border-radius: 24px; padding: 1.75rem;
-          position: relative; overflow: hidden;
-        }
-        .sk-panel::before {
-          content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
-        }
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
-        .sk-badge {
-          display: inline-flex; align-items: center; gap: 0.45rem;
-          font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em;
-          color: var(--chrome-dark); background: var(--glass-bg);
-          border: 1px solid var(--glass-border); border-radius: 999px; padding: 0.28rem 0.85rem;
-        }
-        @keyframes sk-live-dot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.7); } }
-        .sk-live-dot {
-          width: 6px; height: 6px; border-radius: 50%;
-          background: var(--blue-bright); box-shadow: 0 0 6px rgba(45,143,255,0.8);
-          animation: sk-live-dot 1.6s ease-in-out infinite; display: inline-block;
-        }
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 10px 28px rgba(0,0,0,.35);
 
-        @media (max-width: 1100px) { .sk-main-grid { grid-template-columns: 1fr !important; } }
-        @media (max-width: 700px)  { #skills { padding: 90px 5% !important; } }
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    border-color .35s cubic-bezier(.16,1,.3,1),
+    box-shadow .35s cubic-bezier(.16,1,.3,1),
+    background .35s cubic-bezier(.16,1,.3,1);
+}
+
+.sk-node-box img{
+  width:32px;
+  height:32px;
+  object-fit:contain;
+  transition:
+    transform .35s ease,
+    filter .35s ease;
+}
+
+.sk-node.active-node .sk-node-box,
+.sk-node:hover .sk-node-box{
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(33,48,78,.98),
+      rgba(18,28,50,.98)
+    );
+
+  border-color: rgba(45,143,255,.75);
+
+  transform: scale(1.18) translateY(-6px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 0 20px rgba(45,143,255,.28),
+    0 0 55px rgba(45,143,255,.18),
+    0 18px 38px rgba(0,0,0,.45);
+}
+
+.sk-node.active-node img,
+.sk-node:hover img{
+  transform:scale(1.08);
+}
+
+.sk-node-label{
+  position:absolute;
+  top:calc(100% + 10px);
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'Space Mono', monospace;
+  font-size:.56rem;
+  letter-spacing:.08em;
+  color:var(--muted);
+  white-space:nowrap;
+  opacity:.65;
+  transition:all .3s ease;
+}
+
+.sk-node.active-node .sk-node-label,
+.sk-node:hover .sk-node-label{
+  color:var(--white);
+  opacity:1;
+}
+
+@keyframes sk-halo-pulse{
+  0%{
+    transform:translate(-50%,-50%) scale(.85);
+    opacity:.35;
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1.7);
+    opacity:0;
+  }
+}
+
+.sk-halo{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  border:1px solid rgba(45,143,255,.8);
+  box-shadow:0 0 25px rgba(45,143,255,.35);
+  pointer-events:none;
+  animation:sk-halo-pulse 1.8s ease infinite;
+}
+
+@keyframes sk-line-dash{
+  to{
+    stroke-dashoffset:-20;
+  }
+}
+
+
+
+.sk-ring-outer{
+  position:absolute;
+  inset:-22px;
+  border-radius:50%;
+  border:1px dashed rgba(45,143,255,.22);
+  animation:sk-spin-cw 22s linear infinite;
+  pointer-events:none;
+}
+
+.sk-ring-inner{
+  position:absolute;
+  inset:-9px;
+  border-radius:50%;
+  border:1px solid rgba(45,143,255,.12);
+  animation:sk-spin-ccw 13s linear infinite;
+  pointer-events:none;
+}
+
+@keyframes sk-hex-pulse{
+  0%,100%{
+    filter:drop-shadow(0 0 8px rgba(45,143,255,.45));
+  }
+  50%{
+    filter:drop-shadow(0 0 24px rgba(45,143,255,.85));
+  }
+}
+
+.sk-hex-svg{
+  animation:sk-hex-pulse 3s ease-in-out infinite;
+}
+
+.sk-panel{
+  background:var(--navy-card);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:1.75rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.sk-panel::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:10%;
+  right:10%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+}
+
+.sk-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  font-family:'Space Mono', monospace;
+  font-size:.58rem;
+  letter-spacing:.14em;
+  color:var(--chrome-dark);
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:999px;
+  padding:.28rem .85rem;
+}
+
+@keyframes sk-live-dot{
+  0%,100%{
+    opacity:1;
+    transform:scale(1);
+  }
+  50%{
+    opacity:.4;
+    transform:scale(.7);
+  }
+}
+
+.sk-center-icon{
+
+    animation:centerSwitch .45s cubic-bezier(.16,1,.3,1);
+
+}
+
+@keyframes centerSwitch{
+
+    0%{
+        opacity:0;
+        transform:scale(.55) rotate(-18deg);
+    }
+
+    55%{
+        opacity:1;
+        transform:scale(1.12) rotate(6deg);
+    }
+
+    100%{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+
+}
+
+.sk-live-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--blue-bright);
+  box-shadow:0 0 8px rgba(45,143,255,.8);
+  animation:sk-live-dot 1.6s ease infinite;
+}
+
+@media (max-width:1100px){
+  .sk-main-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media (max-width:700px){
+  #skills{
+    padding:90px 5%!important;
+  }
+}
       `}</style>
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -404,21 +570,7 @@ export default function SkillsSection() {
                         stroke="rgba(0,102,255,0.14)" strokeWidth={1.2} strokeDasharray="4 6"
                       />
 
-                      {positioned.map(skill => {
-                        const isActive = activeSkill?.label === skill.label
-                        return (
-                          <line key={skill.label}
-                            x1={CX} y1={CY}
-                            x2={skill.x} y2={skill.y}
-                            stroke={isActive ? 'url(#sk-lg)' : 'rgba(0,102,255,0.08)'}
-                            strokeWidth={isActive ? 1.6 : 0.6}
-                            strokeDasharray={isActive ? '8 4' : '4 8'}
-                            strokeDashoffset={0}
-                            className={isActive ? 'sk-line-active' : ''}
-                            style={{ transition: 'stroke 0.4s ease, stroke-width 0.4s ease' }}
-                          />
-                        )
-                      })}
+               
 
                       {activeSkill && (() => {
                         const s = positioned.find(p => p.label === activeSkill.label)
@@ -439,8 +591,33 @@ export default function SkillsSection() {
                           </linearGradient>
                         </defs>
                         <polygon points="40,5 68,20 68,60 40,75 12,60 12,20" fill="var(--navy-card)" stroke="url(#sk-hg)" strokeWidth="1.5"/>
-                        <text x="40" y="42" textAnchor="middle" dominantBaseline="middle" fill="#2D8FFF" fontSize="13" fontWeight="bold" fontFamily="monospace" letterSpacing="1.5">&lt;/&gt;</text>
-                      </svg>
+<foreignObject x="20" y="20" width="40" height="40">
+  <div
+    key={activeCategory}
+    className="sk-center-icon"
+    style={{
+      width: '40px',
+      height: '40px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}
+  >
+    <Image
+      src={CENTER_ICON[activeCategory]}
+      alt={activeCategory}
+      width={34}
+      height={34}
+      style={{
+        objectFit: 'contain',
+        userSelect: 'none',
+        pointerEvents: 'none',
+        filter:
+          'drop-shadow(0 0 8px rgba(45,143,255,.35)) drop-shadow(0 0 16px rgba(45,143,255,.18))'
+      }}
+    />
+  </div>
+</foreignObject>                      </svg>
                     </div>
 
                     {/* Skill nodes */}
@@ -458,9 +635,28 @@ export default function SkillsSection() {
                               ? '0 0 32px rgba(45,143,255,0.32), 0 4px 20px rgba(0,0,0,0.15)'
                               : '0 4px 20px rgba(0,0,0,0.25)',
                           }}>
-                            <Image src={`/icon/${skill.icon}`} alt={skill.label} width={32} height={32} style={{ objectFit: 'contain' }}/>
-                          </div>
-                          <span className="sk-node-label">{skill.label}</span>
+                        <Image
+  src={`/icon/${skill.icon}`}
+  alt={skill.label}
+  width={34}
+  height={34}
+  style={{
+    objectFit: 'contain',
+    transition: 'all .35s ease',
+    filter:
+      skill.label === 'GitHub' || skill.label === 'Vercel'
+        ? 'brightness(0) invert(1)'
+        : skill.label === 'VS Code'
+        ? 'drop-shadow(0 0 8px rgba(45,143,255,.45))'
+        : 'none'
+  }}
+/>
+
+</div>
+
+<span className="sk-node-label">
+  {skill.label}
+</span>
                         </div>
                       )
                     })}

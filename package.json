@@ -2,11 +2,12 @@
   "name": "antonio-russo-portfolio",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "export": "next export"
+},
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "framer-motion": "^12.42.0",

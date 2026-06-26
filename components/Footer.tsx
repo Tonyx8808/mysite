@@ -234,9 +234,7 @@ export default function Footer() {
             <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem', color: 'var(--muted)', letterSpacing: '0.04em' }}>
               +39 324 590 7033
             </p>
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem', color: 'var(--chrome-dark)', marginTop: '0.3rem' }}>
-              antoniorusso1988@outlook.it
-            </p>
+            
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Elimina il warning "Cross origin request detected"
-  // Aggiungi qui l'IP del tuo dispositivo mobile/WSL se cambia
+  output: 'export',
+
   allowedDevOrigins: [
-    '172.23.144.1',   // IP rilevato nel warning
+    '172.23.144.1',
     'localhost',
     '127.0.0.1',
   ],

@@ -2,11 +2,18 @@
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import emailjs from '@emailjs/browser'
+
+// ── Sostituisci con i tuoi dati EmailJS ──────────────────────────
+const EJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
+const EJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
+const EJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
+// ─────────────────────────────────────────────────────────────────
 
 const SOCIAL = [
-  { label: 'GitHub',    href: 'https://github.com/Tonyx8808' },
-  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/antonio-russo88/' },
-  { label: 'TikTok', href: 'https://www.tiktok.com/@john.the.ripper8' },
+  { label: 'GitHub',   href: 'https://github.com/Tonyx8808' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/antonio-russo88/' },
+  { label: 'TikTok',  href: 'https://www.tiktok.com/@john.the.ripper8' },
 ]
 
 type Status = 'idle' | 'sending' | 'ok' | 'error'
@@ -28,24 +35,35 @@ export default function ContactSection() {
   const [status,  setStatus]  = useState<Status>('idle')
   const [errMsg,  setErrMsg]  = useState('')
   const [focused, setFocused] = useState<string | null>(null)
-  const loadedAt = useRef<number>(Date.now())
+  const formRef = useRef<HTMLDivElement>(null)
 
   async function handleSubmit() {
     if (status === 'sending') return
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setErrMsg('Compila tutti i campi.')
+      setStatus('error')
+      return
+    }
     setStatus('sending')
     setErrMsg('')
+
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message, website: '', _loadedAt: loadedAt.current }),
-      })
-      const data = await res.json()
-      if (!res.ok || !data.ok) { setErrMsg(data.error ?? 'Errore imprevisto.'); setStatus('error'); return }
+      await emailjs.send(
+  EJS_SERVICE_ID,
+  EJS_TEMPLATE_ID,
+  {
+    nome:      name.trim(),
+    cognome:   '',           // non hai il campo cognome nel form, passa stringa vuota
+    email:     email.trim(),
+    telefono:  '',           // idem
+    messaggio: message.trim(),
+  },
+  EJS_PUBLIC_KEY
+)
       setStatus('ok')
       setName(''); setEmail(''); setMessage('')
     } catch {
-      setErrMsg('Errore di rete.')
+      setErrMsg('Errore durante l\'invio. Riprova.')
       setStatus('error')
     }
   }
@@ -90,37 +108,17 @@ export default function ContactSection() {
           gap: 5rem;
           align-items: start;
         }
-        .contact-email-text {
-          word-break: break-all;
-        }
-        .contact-submit {
-          align-self: flex-start;
-        }
+        .contact-email-text { word-break: break-all; }
+        .contact-submit { align-self: flex-start; }
 
-        /* ── Tablet ── */
         @media (max-width: 900px) {
-          .contact-grid {
-            grid-template-columns: 1fr;
-            gap: 3rem;
-          }
+          .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
         }
-
-        /* ── Mobile ── */
         @media (max-width: 600px) {
-          #contact {
-            padding: 80px 5% !important;
-          }
-          .contact-grid {
-            gap: 2.5rem;
-          }
-          .contact-submit {
-            width: 100% !important;
-            justify-content: center;
-            text-align: center;
-          }
-          .contact-header {
-            margin-bottom: 3rem !important;
-          }
+          #contact { padding: 80px 5% !important; }
+          .contact-grid { gap: 2.5rem; }
+          .contact-submit { width: 100% !important; justify-content: center; text-align: center; }
+          .contact-header { margin-bottom: 3rem !important; }
         }
       `}</style>
 
@@ -226,7 +224,7 @@ export default function ContactSection() {
           </motion.div>
 
           {/* ── Right: Form ── */}
-          <motion.div variants={itemVariants}>
+          <motion.div variants={itemVariants} ref={formRef}>
             <AnimatePresence mode="wait">
               {status === 'ok' ? (
                 <motion.div
@@ -282,10 +280,6 @@ export default function ContactSection() {
                     position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px',
                     background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
                   }} />
-
-                  {/* Honeypot */}
-                  <input type="text" name="website" autoComplete="off" tabIndex={-1} aria-hidden="true"
-                    style={{ display: 'none', position: 'absolute', left: '-9999px' }} />
 
                   <div>
                     <label style={labelStyle}>Nome</label>
@@ -343,7 +337,7 @@ export default function ContactSection() {
                     whileTap={{ scale: 0.97 }}
                     transition={{ duration: 0.25 }}
                   >
-                    {status === 'sending' ? 'Invio in corso\u2026' : `Invia messaggio \u2192`}
+                    {status === 'sending' ? 'Invio in corso…' : `Invia messaggio →`}
                   </motion.button>
 
                   <p style={{

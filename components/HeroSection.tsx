@@ -14,15 +14,12 @@ let   _started = false
 let   _done    = false
 
 function subscribePreload(cb: (pct: number, done: boolean) => void) {
-  // Se già completo, notifica subito senza ripartire
   if (_done) { cb(1, true); return () => {} }
 
   _listeners.push(cb)
 
   if (!_started) {
     _started = true
-    // Coda con concorrenza limitata: 240 richieste parallele saturano
-    // il browser mobile (max 6 conn/dominio) e causano timeout silenzioso
     const CONCURRENCY = 6
     const queue = Array.from({ length: FRAME_COUNT }, (_, i) => i)
     let qIdx   = 0
@@ -60,6 +57,8 @@ const DIALOGUES = [
     quote: 'Il codice è architettura. Ogni riga ha un peso.',
     speaker: 'Antonio Russo — Front-End Designer',
     tag: 'Design System',
+    // posizione verticale su mobile (% dall'alto del viewport sticky)
+    mobileTop: '18%',
   },
   {
     id: 'd2', show: 0.35, hide: 0.65,
@@ -67,6 +66,7 @@ const DIALOGUES = [
     quote: "L'interfaccia respira. L'utente sente la differenza.",
     speaker: 'Principio — Framer Motion',
     tag: 'Interaction',
+    mobileTop: '18%',
   },
   {
     id: 'd3', show: 0.62, hide: 0.92,
@@ -74,6 +74,7 @@ const DIALOGUES = [
     quote: 'Next.js. TypeScript. Tailwind. Il minimo per fare il massimo.',
     speaker: 'Stack — 2024 / 2025',
     tag: 'Tech',
+    mobileTop: '18%',
   },
 ]
 
@@ -88,7 +89,6 @@ export default function HeroScroll() {
   const currentFrame = useRef(0)
   const rafRef       = useRef<number | null>(null)
 
-  // Cache wrapper metrics so we don't thrash layout on every scroll tick
   const wrapTopRef    = useRef(0)
   const wrapHeightRef = useRef(0)
 
@@ -96,13 +96,10 @@ export default function HeroScroll() {
   const [ready, setReady]               = useState(() => _done)
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set())
 
-  // ── Cache wrapper metrics (recalculate on resize / orientation change) ─────
   useEffect(() => {
     const measure = () => {
       const wrap = wrapRef.current
       if (!wrap) return
-      // Use offsetTop instead of getBoundingClientRect to get the document-relative top
-      // This avoids the sticky viewport contaminating the measurement
       let top = 0
       let el: HTMLElement | null = wrap
       while (el) { top += el.offsetTop; el = el.offsetParent as HTMLElement | null }
@@ -119,7 +116,6 @@ export default function HeroScroll() {
     }
   }, [])
 
-  // ── Preload frames — singleton, non riparte su remount ────────────────────
   useEffect(() => {
     return subscribePreload((pct, done) => {
       setLoadPct(pct)
@@ -127,14 +123,12 @@ export default function HeroScroll() {
     })
   }, [])
 
-  // ── Scroll → frame swap ────────────────────────────────────────────────────
   useEffect(() => {
     const onScroll = () => {
       if (rafRef.current) return
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null
 
-        // scrollY is always reliable — no layout reads needed here
         const scrollY  = window.scrollY
         const total    = wrapHeightRef.current - window.innerHeight
         const rawProg  = total <= 0 ? 0 : (scrollY - wrapTopRef.current) / total
@@ -196,8 +190,6 @@ export default function HeroScroll() {
           letter-spacing: -1px;
           width: 100%;
         }
-        /* Su mobile stretto "ANTONIO" (7 chars @ Syne 800) fuoriesce:
-           abbassa il font fino a che entra nel padding container */
         @media (max-width: 767px) {
           .hero-title {
             font-size: clamp(1.8rem, 10.5vw, 4rem);
@@ -228,38 +220,47 @@ export default function HeroScroll() {
           .hero-bottom-area { padding: 0 1.2rem 3.5rem; }
         }
 
-        /* ── Frame image: portrait-aware on mobile ── */
+        /* ── Frame image ── */
         .hero-frame-img {
           object-fit: cover;
           object-position: center center;
         }
-        /* On narrow portrait viewports keep the subject visible */
         @media (max-width: 640px) and (orientation: portrait) {
           .hero-frame-img {
             object-position: 60% center;
           }
         }
 
-        /* ── Mobile progress mini-cards (replace desktop dialogue cards) ── */
-        .hero-mobile-tag {
+        /* ── Mobile dialogue card — una sola card visibile alla volta ── */
+        /*
+          Ogni card occupa la stessa posizione assoluta (top: 18%, left/right).
+          Solo quella con .is-visible viene mostrata, le altre hanno opacity 0
+          e pointer-events none. Non si sovrappongono perché una sola è visibile.
+        */
+        .hero-mobile-card {
           display: none;
           position: absolute;
+          top: 18%;
           left: 1.2rem;
-          top: 50%;
-          transform: translateY(-50%);
+          right: 1.2rem;
           z-index: 20;
-          flex-direction: column;
-          gap: 0.5rem;
-          max-width: calc(100vw - 2.4rem);
+          pointer-events: none;
         }
         @media (max-width: 767px) {
-          .hero-mobile-tag { display: flex; }
+          .hero-mobile-card { display: block; }
         }
-        .hero-mobile-tag-inner {
-          background: linear-gradient(135deg, rgba(5,8,16,0.95), rgba(0,20,50,0.92));
+
+        .hero-mobile-card-inner {
+          background: linear-gradient(135deg, rgba(5,8,16,0.96), rgba(0,20,50,0.93));
           border: 1px solid rgba(0,102,255,0.35);
-          padding: 0.75rem 1rem;
-          transition: opacity 400ms ease, transform 400ms ease;
+          padding: 0.85rem 1rem;
+          opacity: 0;
+          transform: translateY(10px);
+          transition: opacity 380ms ease, transform 380ms ease;
+        }
+        .hero-mobile-card.is-visible .hero-mobile-card-inner {
+          opacity: 1;
+          transform: translateY(0);
         }
       `}</style>
 
@@ -429,7 +430,7 @@ export default function HeroScroll() {
           </div>
         </div>
 
-        {/* Dialogue cards — desktop only */}
+        {/* ── Dialogue cards — DESKTOP only ── */}
         {DIALOGUES.map((d, i) => {
           const vis = visibleCards.has(d.id)
           const pos: React.CSSProperties =
@@ -483,40 +484,51 @@ export default function HeroScroll() {
           )
         })}
 
-        {/* Mobile dialogue tags — centro schermo, versione compatta */}
+        {/* ── Dialogue cards — MOBILE only ──
+            Una card alla volta, stessa posizione assoluta (top: 18%).
+            La visibilità è gestita dalla classe .is-visible, non dal DOM.
+            Così non c'è mai sovrapposizione e non servono z-index acrobatici. */}
         {DIALOGUES.map((d) => {
           const vis = visibleCards.has(d.id)
           return (
-            <div key={`mob-${d.id}`} className="hero-mobile-tag" aria-hidden>
-              <div
-                className="hero-mobile-tag-inner"
-                style={{
-                  opacity: vis ? 1 : 0,
-                  transform: vis ? 'translateY(0)' : 'translateY(12px)',
-                  pointerEvents: 'none',
-                }}
-              >
+            <div
+              key={`mob-${d.id}`}
+              className={`hero-mobile-card${vis ? ' is-visible' : ''}`}
+              aria-hidden
+            >
+              <div className="hero-mobile-card-inner">
+                {/* Header: code + tag */}
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  marginBottom: '0.4rem',
+                  borderBottom: '1px solid rgba(0,102,255,0.18)',
+                  paddingBottom: '0.5rem', marginBottom: '0.6rem',
                 }}>
                   <span style={{
                     fontFamily: 'var(--font-space-mono)', fontSize: '0.55rem',
-                    textTransform: 'uppercase', letterSpacing: '0.28em', color: '#0066FF',
+                    textTransform: 'uppercase', letterSpacing: '0.3em', color: '#0066FF',
                   }}>{d.code}</span>
                   <span style={{
                     fontFamily: 'var(--font-space-mono)', fontSize: '0.52rem',
                     textTransform: 'uppercase', letterSpacing: '0.18em', color: '#00A3FF',
                     background: 'rgba(0,102,255,0.1)', border: '1px solid rgba(0,102,255,0.25)',
-                    padding: '1px 6px',
+                    padding: '2px 8px',
                   }}>{d.tag}</span>
                 </div>
+
+                {/* Quote */}
                 <p style={{
                   margin: 0,
-                  fontFamily: 'var(--font-syne)', fontSize: 'clamp(0.8rem, 3.5vw, 1rem)',
+                  fontFamily: 'var(--font-syne)', fontSize: 'clamp(0.85rem, 3.8vw, 1.05rem)',
                   fontWeight: 700, textTransform: 'uppercase', lineHeight: 1.25,
                   color: 'var(--white)',
                 }}>{d.quote}</p>
+
+                {/* Speaker */}
+                <p style={{
+                  margin: '0.55rem 0 0',
+                  fontFamily: 'var(--font-space-mono)', fontSize: '0.55rem',
+                  letterSpacing: '0.12em', color: 'var(--chrome)',
+                }}>{d.speaker}</p>
               </div>
             </div>
           )

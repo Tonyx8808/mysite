@@ -12,6 +12,7 @@ import SkillsSection from '@/components/SkillsSection'
 import QuoteSection from '@/components/QuoteSection'
 import ContactSection from '@/components/ContactSection'
 import Footer from '@/components/Footer'
+import ProjectsSection from '@/components/Projectssection'
 
 import {
   initScrollReveal,
@@ -63,6 +64,7 @@ export default function Home() {
           <AboutSection />
           <ServicesSection />
           <SkillsSection />
+          <ProjectsSection />
           <QuoteSection />
           <ContactSection />
         </main>

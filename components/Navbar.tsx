@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
+import { label } from 'framer-motion/client'
 
 const NAV_LINKS = [
   { href: '#home', label: 'Home' },
@@ -8,6 +9,7 @@ const NAV_LINKS = [
   { href: '#services', label: 'Servizi' },
   { href: '#skills', label: 'Skills' },
   { href: '#contact', label: 'Contatti' },
+  {href: '#projects', label:'Progetti'},
 ]
 
 export default function Navbar() {

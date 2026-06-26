@@ -4,10 +4,10 @@ import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import emailjs from '@emailjs/browser'
 
-// ── Sostituisci con i tuoi dati EmailJS ──────────────────────────
-const EJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
-const EJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
-const EJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
+// ── Variabili d'ambiente (Next.js NEXT_PUBLIC_*) ──────────────────
+const EJS_SERVICE_ID  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID  ?? ''
+const EJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? ''
+const EJS_PUBLIC_KEY  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY  ?? ''
 // ─────────────────────────────────────────────────────────────────
 
 const SOCIAL = [
@@ -35,35 +35,49 @@ export default function ContactSection() {
   const [status,  setStatus]  = useState<Status>('idle')
   const [errMsg,  setErrMsg]  = useState('')
   const [focused, setFocused] = useState<string | null>(null)
-  const formRef = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
-  async function handleSubmit() {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
     if (status === 'sending') return
     if (!name.trim() || !email.trim() || !message.trim()) {
       setErrMsg('Compila tutti i campi.')
       setStatus('error')
       return
     }
+
+    // Sanity check variabili d'ambiente
+    if (!EJS_SERVICE_ID || !EJS_TEMPLATE_ID || !EJS_PUBLIC_KEY) {
+      setErrMsg('Configurazione EmailJS mancante.')
+      setStatus('error')
+      console.error('[ContactSection] Variabili EmailJS non trovate:', {
+        EJS_SERVICE_ID, EJS_TEMPLATE_ID, EJS_PUBLIC_KEY,
+      })
+      return
+    }
+
     setStatus('sending')
     setErrMsg('')
 
     try {
-      await emailjs.send(
-  EJS_SERVICE_ID,
-  EJS_TEMPLATE_ID,
-  {
-    nome:      name.trim(),
-    cognome:   '',           // non hai il campo cognome nel form, passa stringa vuota
-    email:     email.trim(),
-    telefono:  '',           // idem
-    messaggio: message.trim(),
-  },
-  EJS_PUBLIC_KEY
-)
+      // Usiamo sendForm passando il ref del <form> — più affidabile di '#contact-form'
+      if (!formRef.current) throw new Error('formRef non disponibile')
+
+      await emailjs.sendForm(
+        EJS_SERVICE_ID,
+        EJS_TEMPLATE_ID,
+        formRef.current,
+        EJS_PUBLIC_KEY,
+      )
+
       setStatus('ok')
-      setName(''); setEmail(''); setMessage('')
-    } catch {
-      setErrMsg('Errore durante l\'invio. Riprova.')
+      setName('')
+      setEmail('')
+      setMessage('')
+    } catch (err) {
+      console.error('[ContactSection] EmailJS error:', err)
+      setErrMsg("Errore durante l'invio. Riprova.")
       setStatus('error')
     }
   }
@@ -177,31 +191,17 @@ export default function ContactSection() {
               Rispondo entro 24h lavorative
             </div>
 
-            {/* Email card */}
-            <motion.a
-              href="mailto:antoniorusso1988@outlook.it"
-              style={{
-                display: 'flex', flexDirection: 'column', gap: '0.4rem',
-                padding: '1.6rem', ...glass,
-                marginBottom: '1.2rem', position: 'relative', overflow: 'hidden',
-              }}
-              whileHover={{ y: -4, boxShadow: '0 16px 50px rgba(0,102,255,0.2)' }}
-              transition={{ duration: 0.3 }}
-            >
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: '1px',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)',
-              }} />
-              <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.62rem', color: 'var(--chrome-dark)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-                Scrivimi
-              </span>
-              <span className="contact-email-text" style={{ fontFamily: 'var(--font-syne)', fontSize: '1rem', fontWeight: 600, color: 'var(--white)' }}>
-                antoniorusso1988@outlook.it
-              </span>
-              <span style={{ position: 'absolute', top: '1.3rem', right: '1.3rem', fontSize: '1.2rem', color: 'var(--blue-bright)' }}>
-                {'\u2197'}
-              </span>
-            </motion.a>
+            {/* Header Social */}
+            <div style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '0.75rem',
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              opacity: 0.8,
+              marginBottom: '0.6rem',
+            }}>
+              I MIEI SOCIAL
+            </div>
 
             {/* Social */}
             <div style={{ display: 'flex', gap: '0.7rem', flexWrap: 'wrap' }}>
@@ -224,7 +224,7 @@ export default function ContactSection() {
           </motion.div>
 
           {/* ── Right: Form ── */}
-          <motion.div variants={itemVariants} ref={formRef}>
+          <motion.div variants={itemVariants}>
             <AnimatePresence mode="wait">
               {status === 'ok' ? (
                 <motion.div
@@ -248,12 +248,15 @@ export default function ContactSection() {
                       fontSize: '1.5rem', margin: '0 auto 1.2rem',
                     }}
                   >✓</motion.div>
+
                   <p style={{ fontFamily: 'var(--font-syne)', fontSize: '1.1rem', color: 'var(--white)', fontWeight: 700, marginBottom: '0.5rem' }}>
                     Messaggio inviato!
                   </p>
+
                   <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.72rem', color: 'var(--chrome-dark)', letterSpacing: '0.06em' }}>
                     Ti rispondo entro 24h lavorative.
                   </p>
+
                   <motion.button
                     onClick={() => setStatus('idle')}
                     style={{
@@ -263,71 +266,105 @@ export default function ContactSection() {
                     }}
                     whileHover={{ x: 4 }}
                   >
-                    {`Invia un altro \u2192`}
+                    {`Invia un altro →`}
                   </motion.button>
                 </motion.div>
               ) : (
-                <motion.div
-                  key="form"
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                <form
+                  ref={formRef}
+                  onSubmit={handleSubmit}
                   style={{
-                    ...glass, padding: 'clamp(1.4rem, 3vw, 2.5rem)',
-                    display: 'flex', flexDirection: 'column', gap: '1.3rem',
-                    position: 'relative', overflow: 'hidden',
+                    ...glass,
+                    padding: 'clamp(1.4rem, 3vw, 2.5rem)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1.3rem',
+                    position: 'relative',
+                    overflow: 'hidden',
                   }}
                 >
-                  <div style={{
-                    position: 'absolute', top: 0, left: '10%', right: '10%', height: '1px',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
-                  }} />
-
                   <div>
                     <label style={labelStyle}>Nome</label>
                     <div style={inputWrap('name')}>
-                      <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                        onFocus={() => setFocused('name')} onBlur={() => setFocused(null)}
-                        placeholder="Antonio Russo" style={inputStyle} maxLength={100} autoComplete="name" />
+                      <input
+                        name="nome"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        onFocus={() => setFocused('name')}
+                        onBlur={() => setFocused(null)}
+                        placeholder="Antonio Russo"
+                        style={inputStyle}
+                        maxLength={100}
+                        autoComplete="name"
+                      />
                     </div>
                   </div>
+
+                  {/* Honeypot anti-spam nascosti */}
+                  <input type="hidden" name="cognome" value="" />
+                  <input type="hidden" name="telefono" value="" />
 
                   <div>
                     <label style={labelStyle}>Email</label>
                     <div style={inputWrap('email')}>
-                      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                        onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
-                        placeholder="tua@email.com" style={inputStyle} maxLength={200} autoComplete="email" />
+                      <input
+                        name="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => setFocused('email')}
+                        onBlur={() => setFocused(null)}
+                        placeholder="tua@email.com"
+                        style={inputStyle}
+                        maxLength={200}
+                        autoComplete="email"
+                      />
                     </div>
                   </div>
 
                   <div>
                     <label style={labelStyle}>Messaggio</label>
                     <div style={inputWrap('message')}>
-                      <textarea value={message} onChange={(e) => setMessage(e.target.value)}
-                        onFocus={() => setFocused('message')} onBlur={() => setFocused(null)}
-                        placeholder="Raccontami del tuo progetto…" rows={5}
-                        style={{ ...inputStyle, resize: 'vertical', minHeight: '120px' }} maxLength={2000} />
+                      <textarea
+                        name="messaggio"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onFocus={() => setFocused('message')}
+                        onBlur={() => setFocused(null)}
+                        placeholder="Raccontami del tuo progetto…"
+                        rows={5}
+                        style={{ ...inputStyle, resize: 'vertical', minHeight: '120px' }}
+                        maxLength={2000}
+                      />
                     </div>
                   </div>
 
-                  <AnimatePresence>
-                    {status === 'error' && errMsg && (
-                      <motion.p initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                        style={{ fontFamily: 'var(--font-space-mono)', fontSize: '0.7rem', color: '#ff6b6b', letterSpacing: '0.05em' }}>
-                        {errMsg}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
+                  {status === 'error' && errMsg && (
+                    <p style={{
+                      fontFamily: 'var(--font-space-mono)',
+                      fontSize: '0.7rem',
+                      color: '#ff6b6b',
+                      letterSpacing: '0.05em',
+                    }}>
+                      {errMsg}
+                    </p>
+                  )}
 
                   <motion.button
-                    onClick={handleSubmit}
+                    type="submit"
                     disabled={status === 'sending'}
                     className="contact-submit"
                     style={{
                       padding: '0.95rem 2rem',
                       background: 'linear-gradient(135deg, #0066FF 0%, #00A3FF 100%)',
-                      color: '#fff', border: 'none', borderRadius: '10px',
-                      fontFamily: 'var(--font-syne)', fontWeight: 700,
-                      fontSize: '0.9rem', letterSpacing: '0.04em',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontFamily: 'var(--font-syne)',
+                      fontWeight: 700,
+                      fontSize: '0.9rem',
+                      letterSpacing: '0.04em',
                       cursor: status === 'sending' ? 'wait' : 'pointer',
                       alignSelf: 'flex-start',
                       boxShadow: '0 4px 24px rgba(0,102,255,0.3)',
@@ -341,15 +378,19 @@ export default function ContactSection() {
                   </motion.button>
 
                   <p style={{
-                    fontFamily: 'var(--font-space-mono)', fontSize: '0.6rem',
-                    color: 'rgba(255,255,255,0.18)', letterSpacing: '0.05em', lineHeight: 1.6,
+                    fontFamily: 'var(--font-space-mono)',
+                    fontSize: '0.6rem',
+                    color: 'rgba(255,255,255,0.18)',
+                    letterSpacing: '0.05em',
+                    lineHeight: 1.6,
                   }}>
                     I tuoi dati vengono utilizzati esclusivamente per risponderti e non vengono condivisi con terze parti.
                   </p>
-                </motion.div>
+                </form>
               )}
             </AnimatePresence>
           </motion.div>
+
         </div>
       </motion.div>
     </section>

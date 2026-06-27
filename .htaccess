@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────────────────────────────
 #  ANTONIO RUSSO — PORTFOLIO
-#  .htaccess — ULTRA STRICT Security Hardening (Keliweb Compatible)
+#  .htaccess — Security Hardening (Keliweb Compatible)
 # ─────────────────────────────────────────────────────────────────
 
 Options -Indexes
@@ -16,36 +16,17 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ /index.html [L]
 
-# ── 3. Security Headers ULTRA STRICT ─────────────────────────────
+# ── 3. Security Headers ───────────────────────────────────────────
 <IfModule mod_headers.c>
 
-  # HSTS — 1 anno + preload
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-
-  # Clickjacking
   Header always set X-Frame-Options "DENY"
-
-  # MIME sniffing
   Header always set X-Content-Type-Options "nosniff"
-
-  # Referrer privacy
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-
-  # Permissions Policy
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
-
-  # Legacy XSS protection
   Header always set X-XSS-Protection "1; mode=block"
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
 
-  # COOP / COEP / CORP
-  Header always set Cross-Origin-Opener-Policy "same-origin"
-  Header always set Cross-Origin-Embedder-Policy "require-corp"
-  Header always set Cross-Origin-Resource-Policy "same-origin"
-
-  # ───────────────────────────────────────────────────────────────
-  #  STRICT CSP (NO nonce — compatibile hosting statico Keliweb)
-  #  Spline autorizzato
-  # ───────────────────────────────────────────────────────────────
 Header always set Content-Security-Policy "\
 default-src 'self'; \
 script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.emailjs.com https://my.spline.design https://unpkg.com; \

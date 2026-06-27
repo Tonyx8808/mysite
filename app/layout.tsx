@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { Syne, Space_Mono, DM_Sans } from 'next/font/google'
-// @ts-ignore: allow side-effect CSS import in Next.js app directory
+// TypeScript may complain about importing CSS modules without declarations in this repo.
+// Suppress the error for this global CSS side-effect import.
+// @ts-ignore
 import './globals.css'
 import CookieBanner from '@/components/CookieBanner'
 
-// ── Font setup (invariato) ────────────────────────────────────────────────────
+// ── Font setup ───────────────────────────────────────────────────
 const syne = Syne({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
@@ -21,10 +23,10 @@ const dmSans = DM_Sans({
   variable: '--font-dm-sans',
 })
 
-// ── Dominio — cambia solo qui se cambia il dominio ───────────────────────────
+// ── Dominio ──────────────────────────────────────────────────────
 const SITE_URL = 'https://arussodev.it'
 
-// ── Metadata SEO completo ─────────────────────────────────────────────────────
+// ── Metadata SEO ─────────────────────────────────────────────────
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
@@ -52,7 +54,6 @@ export const metadata: Metadata = {
     canonical: '/',
   },
 
-  // ── Open Graph ────────────────────────────────────────────────────────────
   openGraph: {
     type: 'website',
     locale: 'it_IT',
@@ -63,7 +64,7 @@ export const metadata: Metadata = {
       'Esperienze web premium costruite con Next.js, TypeScript e Framer Motion. Basato a Napoli.',
     images: [
       {
-        url: '/og-image.jpg', // → metti in /public/og-image.jpg (1200×630px)
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Antonio Russo — Front-End Designer & Developer',
@@ -71,8 +72,6 @@ export const metadata: Metadata = {
     ],
   },
 
-
-  // ── Robots ────────────────────────────────────────────────────────────────
   robots: {
     index: true,
     follow: true,
@@ -85,47 +84,37 @@ export const metadata: Metadata = {
   },
 }
 
-// ── Root Layout ───────────────────────────────────────────────────────────────
+// ── Root Layout ──────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // JSON-LD Person schema — aiuta Google a capire chi sei
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: 'Antonio Russo',
-    url: SITE_URL,
-    jobTitle: 'Front-End Designer & Developer',
-    description:
-      'Front-End Designer e Developer basato a Napoli. Specializzato in Next.js, TypeScript e Framer Motion.',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Napoli',
-      addressCountry: 'IT',
-    },
-    sameAs: [
-      'https://linkedin.com/in/antonio-russo88',
-      'https://github.com/Tonyx8808',
-    ],
-    knowsAbout: [
-      'Next.js',
-      'TypeScript',
-      'Tailwind CSS',
-      'Framer Motion',
-      'React',
-      'UI Design',
-    ],
-  }
-
   return (
     <html
       lang="it"
       className={`${syne.variable} ${spaceMono.variable} ${dmSans.variable}`}
     >
       <body>
-        {/* JSON-LD structured data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        {/* JSON-LD esterno (compatibile CSP strict) */}
+     <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Antonio Russo",
+      "url": "https://arussodev.it",
+      "jobTitle": "Front-End Designer & Developer",
+      "description": "Front-End Designer e Developer basato a Napoli.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Napoli",
+        "addressCountry": "IT"
+      },
+      "sameAs": [
+        "https://linkedin.com/in/antonio-russo88",
+        "https://github.com/Tonyx8808"
+      ]
+    })
+  }}
+/>
 
         {/* Background Spline globale */}
         <div className="global-spline-bg">

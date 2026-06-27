@@ -1,0 +1,103 @@
+# ─────────────────────────────────────────────────────────────────
+#  ANTONIO RUSSO — PORTFOLIO
+#  .htaccess — ULTRA STRICT Security Hardening (Keliweb Compatible)
+# ─────────────────────────────────────────────────────────────────
+
+Options -Indexes
+ServerSignature Off
+
+# ── 1. HTTPS redirect forzato (301) ──────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ── 2. Next.js static export — routing SPA ───────────────────────
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.html [L]
+
+# ── 3. Security Headers ULTRA STRICT ─────────────────────────────
+<IfModule mod_headers.c>
+
+  # HSTS — 1 anno + preload
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+  # Clickjacking
+  Header always set X-Frame-Options "DENY"
+
+  # MIME sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Referrer privacy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Permissions Policy
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+  # Legacy XSS protection
+  Header always set X-XSS-Protection "1; mode=block"
+
+  # COOP / COEP / CORP
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Embedder-Policy "require-corp"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+
+  # ───────────────────────────────────────────────────────────────
+  #  STRICT CSP (NO nonce — compatibile hosting statico Keliweb)
+  #  Spline autorizzato
+  # ───────────────────────────────────────────────────────────────
+Header always set Content-Security-Policy "\
+default-src 'self'; \
+script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.emailjs.com https://my.spline.design https://unpkg.com; \
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+font-src 'self' https://fonts.gstatic.com data:; \
+img-src 'self' data: blob: https:; \
+connect-src 'self' https://api.emailjs.com https://my.spline.design https://prod.spline.design wss://my.spline.design wss://prod.spline.design https:; \
+worker-src 'self' blob:; \
+child-src 'self' blob: https://my.spline.design https://prod.spline.design; \
+frame-src 'self' https://my.spline.design https://prod.spline.design; \
+frame-ancestors 'none'; \
+base-uri 'self'; \
+form-action 'self' https://api.emailjs.com; \
+object-src 'none'; \
+media-src 'self' blob:; \
+manifest-src 'self';"
+
+</IfModule>
+
+# ── 4. Anti‑hotlinking ───────────────────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !arussodev\.it [NC]
+RewriteRule \.(jpg|jpeg|png|webp|gif|svg)$ - [F,NC]
+
+# ── 5. Anti‑bot ──────────────────────────────────────────────────
+BrowserMatchNoCase "AhrefsBot" bad_bot
+BrowserMatchNoCase "SemrushBot" bad_bot
+BrowserMatchNoCase "MJ12bot" bad_bot
+Order Allow,Deny
+Allow from all
+Deny from env=bad_bot
+
+# ── 6. Cache statica ─────────────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html                 "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType image/webp                "access plus 1 year"
+  ExpiresByType image/jpeg                "access plus 1 year"
+  ExpiresByType image/png                 "access plus 1 year"
+  ExpiresByType image/svg+xml             "access plus 1 year"
+  ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
+
+# ── 7. Compressione Gzip ─────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# ── 8. Blocca file sensibili ─────────────────────────────────────
+<FilesMatch "(^\.env|\.env\.local|\.git|composer\.(json|lock)|package\.json|package-lock\.json)">
+  Require all denied
+</FilesMatch>

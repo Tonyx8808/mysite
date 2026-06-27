@@ -44,9 +44,10 @@ export default function CookieBanner() {
   // ───────────────────────────────────────────────
   function handleExitComplete() {
     const saved = localStorage.getItem(STORAGE_KEY) as ConsentStatus | null
-    if (saved) setStatus(saved)
+    if (saved === 'accepted' || saved === 'declined') {
+      setStatus(saved)
+    }
   }
-
   // Se l’utente ha già scelto → non montare nulla
   if (status !== 'pending') return null
 

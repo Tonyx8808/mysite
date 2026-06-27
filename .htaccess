@@ -49,9 +49,8 @@ manifest-src 'self';"
 # ── 4. Anti‑hotlinking ───────────────────────────────────────────
 RewriteEngine On
 RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !arussodev\.it [NC]
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?arussodev\.it [NC]
 RewriteRule \.(jpg|jpeg|png|webp|gif|svg)$ - [F,NC]
-
 # ── 5. Anti‑bot ──────────────────────────────────────────────────
 BrowserMatchNoCase "AhrefsBot" bad_bot
 BrowserMatchNoCase "SemrushBot" bad_bot

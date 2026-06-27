@@ -534,14 +534,17 @@ export default function HeroScroll() {
           )
         })}
 
-        {/* Loading overlay */}
-        {!ready && (
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 50,
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            gap: '1.5rem', background: '#050810',
-          }}>
+      {/* Loading overlay */}
+{/* Loading overlay */}
+<div style={{
+  position: 'absolute', inset: 0, zIndex: 50,
+  display: 'flex', flexDirection: 'column',
+  alignItems: 'center', justifyContent: 'center',
+  gap: '1.5rem', background: '#050810',
+  opacity: ready ? 0 : 1,
+  pointerEvents: ready ? 'none' : 'all',
+  transition: 'opacity 0.8s ease',
+}}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '0.7rem',
               fontFamily: 'var(--font-space-mono)', fontSize: '0.68rem',
@@ -567,7 +570,7 @@ export default function HeroScroll() {
               Loading Experience · {Math.round(loadPct * 100)}%
             </p>
           </div>
-        )}
+        
       </div>
     </div>
   )

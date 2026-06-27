@@ -124,10 +124,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             style={{ border: 'none' }}
           />
         </div>
-
+   <CookieBanner />
         {children}
+        
 
-        <CookieBanner />
+     
       </body>
     </html>
   )

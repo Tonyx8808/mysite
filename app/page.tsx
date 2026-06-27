@@ -13,6 +13,7 @@ import QuoteSection from '@/components/QuoteSection'
 import ContactSection from '@/components/ContactSection'
 import Footer from '@/components/Footer'
 import ProjectsSection from '@/components/Projectssection'
+import CookieBanner from '@/components/CookieBanner'
 
 import {
   initScrollReveal,
@@ -70,6 +71,7 @@ export default function Home() {
         </main>
 
         <Footer />
+        <CookieBanner />
       </div>
     </>
   )

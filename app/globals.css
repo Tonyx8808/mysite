@@ -373,6 +373,13 @@ section {
   .skill-tile { min-height: 135px !important; }
 }
 
+/* Rimuove overlay del loader quando è done */
+#loader.done::before,
+#loader.done::after {
+  display: none !important;
+}
+
+
 /* ══ SKILL BARS ══ */
 .sbr-fill {
   height: 100%;

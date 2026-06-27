@@ -11,57 +11,153 @@ interface Skill {
   desc: string
   level: number
   tag: string
+  features: { title: string; body: string }[]
 }
 
 const SKILLS: Skill[] = [
-  { label: 'HTML5',      icon: 'html.png',            category: 'FRONTEND', level: 95, tag: 'Fondamenta',      desc: 'Architettura semantica avanzata, accessibilità WCAG 2.1, microdata e structured data. Ogni DOM è costruito per essere leggibile da screen reader e crawler allo stesso modo.' },
-  { label: 'CSS3',       icon: 'css3.png',            category: 'FRONTEND', level: 93, tag: 'Stile',           desc: 'Container queries, cascade layers, animazioni GPU-accelerate e sistemi di design token. CSS che scala senza specificity wars e si legge come prosa.' },
-  { label: 'JavaScript', icon: 'javascript.png',      category: 'FRONTEND', level: 88, tag: 'Core',            desc: 'ES2024, pattern funzionali, Web APIs native e ottimizzazione delle performance. Nessuna dipendenza aggiunta se il browser lo fa già.' },
-  { label: 'TypeScript', icon: 'typescript.png',      category: 'FRONTEND', level: 84, tag: 'Type Safety',     desc: 'Generics avanzati, utility types, discriminated unions e strict mode sempre attivo. Il tipo è documentazione: se compila, è corretto.' },
-  { label: 'React',      icon: 'react.png', category: 'FRONTEND', level: 86, tag: 'UI Framework',    desc: 'Architetture component-driven con hooks custom, Suspense, Server Components e pattern di composizione. Next.js App Router è il mio ambiente naturale.' },
-  { label: 'Tailwind',   icon: 'tailwindcss.png',     category: 'FRONTEND', level: 90, tag: 'Utility CSS',     desc: 'Design systems scalabili con token custom, varianti responsive e temi dinamici. Productivity x3 senza sacrificare la precisione pixel-perfect.' },
-  { label: 'GSAP',       icon: 'gsap.png',            category: 'FRONTEND', level: 78, tag: 'Animazione',      desc: 'ScrollTrigger per storytelling on-scroll, timeline orchestrate e morphing SVG. Le animazioni che creo comunicano gerarchia, non distrazione.' },
-  { label: 'Node.js',    icon: 'nodejs.png',          category: 'BACKEND',  level: 80, tag: 'Runtime',         desc: 'API REST e GraphQL con Express/Fastify, middleware pipeline, streaming e worker threads. Architetture event-driven che non bloccano mai il thread principale.' },
-  { label: 'MongoDB',    icon: 'mongodb.png',         category: 'BACKEND',  level: 74, tag: 'Database',        desc: 'Modellazione document-oriented, aggregation pipeline complesse e indici geospaziali. Mongoose come ODM con validazione schema rigorosa.' },
-  { label: 'Redux',      icon: 'redux.png',           category: 'BACKEND',  level: 76, tag: 'State',           desc: 'Redux Toolkit per state management prevedibile, RTK Query per data fetching e caching intelligente. Pattern slice-based che si leggono da soli.' },
-  { label: 'Git',        icon: 'git.png',             category: 'STRUMENTI',level: 88, tag: 'Version Control', desc: 'Conventional commits, git flow, rebase interattivo e hook pre-commit. Una storia git pulita è rispetto per il team che leggerà il codice dopo di te.' },
-  { label: 'GitHub',     icon: 'github.png',          category: 'STRUMENTI',level: 85, tag: 'Collaboration',   desc: 'Actions per CI/CD automatizzate, code review strutturate e gestione issue strategica. Open-source contributor con PR accettate su progetti attivi.' },
-  { label: 'VS Code',    icon: 'vscode.png',          category: 'STRUMENTI',level: 90, tag: 'Editor',          desc: "L'editor scompare, resta solo il problema. Multi-cursor, debugging integrato, snippet custom e workspace settings sincronizzati." },
-  { label: 'Vercel',     icon: 'vercel.png',          category: 'STRUMENTI',level: 82, tag: 'Deploy',          desc: 'Edge network globale, preview deployments per ogni PR e Analytics real-time. Push e in 30 secondi è live.' },
-  { label: 'npm',        icon: 'npm.png',             category: 'STRUMENTI',level: 83, tag: 'Package Manager', desc: 'Gestione dipendenze con lockfile rigorosi, scripts personalizzati e workspace monorepo. Zero dipendenze superflue.' },
-  { label: 'SEO',        icon: 'seo.png',             category: 'STRUMENTI',level: 79, tag: 'Visibilità',      desc: 'Core Web Vitals, structured data, sitemap dinamiche e meta ottimizzati. Il codice migliore è inutile se Google non riesce a indicizzarlo.' },
+  {
+    label: 'HTML5', icon: 'html.png', category: 'FRONTEND', level: 95, tag: 'Fondamenta',
+    desc: 'Architettura semantica avanzata, accessibilità WCAG 2.1, microdata e structured data. Ogni DOM è costruito per essere leggibile da screen reader e crawler allo stesso modo.',
+    features: [
+      { title: 'Semantica & a11y', body: 'Struttura DOM pensata per screen reader, crawler e performance.' },
+      { title: 'Structured data', body: 'Microdata e JSON-LD per massimizzare la visibilità nei risultati di ricerca.' },
+    ],
+  },
+  {
+    label: 'CSS3', icon: 'css3.png', category: 'FRONTEND', level: 93, tag: 'Stile',
+    desc: 'Container queries, cascade layers, animazioni GPU-accelerate e sistemi di design token. CSS che scala senza specificity wars e si legge come prosa.',
+    features: [
+      { title: 'Container queries', body: 'Layout adattivi basati sul contenitore, non sul viewport.' },
+      { title: 'Design token', body: 'Sistemi di variabili custom per temi coerenti e scalabili.' },
+    ],
+  },
+  {
+    label: 'JavaScript', icon: 'javascript.png', category: 'FRONTEND', level: 88, tag: 'Core',
+    desc: 'ES2024, pattern funzionali, Web APIs native e ottimizzazione delle performance. Nessuna dipendenza aggiunta se il browser lo fa già.',
+    features: [
+      { title: 'ES2024+', body: 'Pattern funzionali moderni e Web APIs native senza dipendenze extra.' },
+      { title: 'Performance', body: 'Event loop, lazy loading e ottimizzazione del runtime browser.' },
+    ],
+  },
+  {
+    label: 'TypeScript', icon: 'typescript.png', category: 'FRONTEND', level: 84, tag: 'Type Safety',
+    desc: 'Generics avanzati, utility types, discriminated unions e strict mode sempre attivo. Il tipo è documentazione: se compila, è corretto.',
+    features: [
+      { title: 'Strict mode', body: 'Zero any: ogni valore ha un tipo esplicito e verificato.' },
+      { title: 'Generics avanzati', body: 'Utility types e discriminated unions per API robuste e auto-documentate.' },
+    ],
+  },
+  {
+    label: 'React', icon: 'react.png', category: 'FRONTEND', level: 86, tag: 'UI Framework',
+    desc: 'Architetture component-driven con hooks custom, Suspense, Server Components e pattern di composizione. Next.js App Router è il mio ambiente naturale.',
+    features: [
+      { title: 'Server Components', body: 'Rendering ibrido con Next.js App Router per performance ottimali.' },
+      { title: 'Hooks custom', body: 'Logica riutilizzabile estratta in hook testabili e componibili.' },
+    ],
+  },
+  {
+    label: 'Tailwind', icon: 'tailwindcss.png', category: 'FRONTEND', level: 90, tag: 'Utility CSS',
+    desc: 'Design systems scalabili con token custom, varianti responsive e temi dinamici. Productivity x3 senza sacrificare la precisione pixel-perfect.',
+    features: [
+      { title: 'Utility-first', body: 'Nessun CSS custom: tutto inline, leggibile e predicibile.' },
+      { title: 'Temi dinamici', body: 'Token custom e dark mode senza una riga di override.' },
+    ],
+  },
+  {
+    label: 'GSAP', icon: 'gsap.png', category: 'FRONTEND', level: 78, tag: 'Animazione',
+    desc: 'ScrollTrigger per storytelling on-scroll, timeline orchestrate e morphing SVG. Le animazioni che creo comunicano gerarchia, non distrazione.',
+    features: [
+      { title: 'ScrollTrigger', body: 'Narrazioni on-scroll sincronizzate con la posizione del viewport.' },
+      { title: 'Timeline orchestrate', body: 'Sequenze complesse controllate al millisecondo, mai una jank.' },
+    ],
+  },
+  {
+    label: 'Node.js', icon: 'nodejs.png', category: 'BACKEND', level: 80, tag: 'Runtime',
+    desc: 'API REST e GraphQL con Express/Fastify, middleware pipeline, streaming e worker threads. Architetture event-driven che non bloccano mai il thread principale.',
+    features: [
+      { title: 'Event-driven', body: 'Architetture non bloccanti con worker threads e streaming.' },
+      { title: 'API REST & GraphQL', body: 'Endpoint robusti con Express/Fastify e middleware pipeline.' },
+    ],
+  },
+  {
+    label: 'MongoDB', icon: 'mongodb.png', category: 'BACKEND', level: 74, tag: 'Database',
+    desc: 'Modellazione document-oriented, aggregation pipeline complesse e indici geospaziali. Mongoose come ODM con validazione schema rigorosa.',
+    features: [
+      { title: 'Aggregation pipeline', body: 'Query complesse e trasformazioni dati direttamente nel database.' },
+      { title: 'Schema rigorosi', body: 'Mongoose con validazione forte per dati sempre consistenti.' },
+    ],
+  },
+  {
+    label: 'Redux', icon: 'redux.png', category: 'BACKEND', level: 76, tag: 'State',
+    desc: 'Redux Toolkit per state management prevedibile, RTK Query per data fetching e caching intelligente. Pattern slice-based che si leggono da soli.',
+    features: [
+      { title: 'Redux Toolkit', body: 'State management prevedibile con slice-based pattern leggibili.' },
+      { title: 'RTK Query', body: 'Data fetching e caching intelligente senza boilerplate.' },
+    ],
+  },
+  {
+    label: 'Git', icon: 'git.png', category: 'STRUMENTI', level: 88, tag: 'Version Control',
+    desc: 'Conventional commits, git flow, rebase interattivo e hook pre-commit. Una storia git pulita è rispetto per il team che leggerà il codice dopo di te.',
+    features: [
+      { title: 'Conventional commits', body: 'Storia git leggibile come un changelog automatico.' },
+      { title: 'Rebase interattivo', body: 'Cronologia pulita e PR facili da revisionare.' },
+    ],
+  },
+  {
+    label: 'GitHub', icon: 'github.png', category: 'STRUMENTI', level: 85, tag: 'Collaboration',
+    desc: 'Actions per CI/CD automatizzate, code review strutturate e gestione issue strategica. Open-source contributor con PR accettate su progetti attivi.',
+    features: [
+      { title: 'GitHub Actions', body: 'CI/CD automatizzata: test, build e deploy ad ogni push.' },
+      { title: 'Code review', body: 'Review strutturate e gestione issue per team asincroni.' },
+    ],
+  },
+  {
+    label: 'VS Code', icon: 'vscode.png', category: 'STRUMENTI', level: 90, tag: 'Editor',
+    desc: "L'editor scompare, resta solo il problema. Multi-cursor, debugging integrato, snippet custom e workspace settings sincronizzati.",
+    features: [
+      { title: 'Multi-cursor', body: "Editing parallelo su decine di righe: l'editor lavora con te." },
+      { title: 'Debug integrato', body: 'Breakpoint, watch e call stack senza uscire dall\'editor.' },
+    ],
+  },
+  {
+    label: 'Vercel', icon: 'vercel.png', category: 'STRUMENTI', level: 82, tag: 'Deploy',
+    desc: 'Edge network globale, preview deployments per ogni PR e Analytics real-time. Push e in 30 secondi è live.',
+    features: [
+      { title: 'Preview deployments', body: 'Ogni PR ha il suo URL di anteprima: review senza ambiente locale.' },
+      { title: 'Edge network', body: 'Distribuzione globale con latenza minima su ogni continente.' },
+    ],
+  },
+  {
+    label: 'npm', icon: 'npm.png', category: 'STRUMENTI', level: 83, tag: 'Package Manager',
+    desc: 'Gestione dipendenze con lockfile rigorosi, scripts personalizzati e workspace monorepo. Zero dipendenze superflue.',
+    features: [
+      { title: 'Lockfile rigorosi', body: 'Dipendenze deterministiche: stesso risultato su ogni macchina.' },
+      { title: 'Monorepo workspace', body: 'Gestione multi-package con scripts condivisi e zero duplicati.' },
+    ],
+  },
+  {
+    label: 'SEO', icon: 'seo.png', category: 'STRUMENTI', level: 79, tag: 'Visibilità',
+    desc: 'Core Web Vitals, structured data, sitemap dinamiche e meta ottimizzati. Il codice migliore è inutile se Google non riesce a indicizzarlo.',
+    features: [
+      { title: 'Core Web Vitals', body: 'LCP, CLS e FID ottimizzati per ranking e UX di qualità.' },
+      { title: 'Sitemap dinamiche', body: 'Indicizzazione automatica di ogni pagina con meta e canonical.' },
+    ],
+  },
 ]
-
 
 const CATEGORIES: Category[] = ['FRONTEND', 'BACKEND', 'STRUMENTI']
 
 const CENTER_ICON = {
   FRONTEND: '/icon/frontend.png',
   BACKEND: '/icon/backend.png',
-  STRUMENTI: '/icon/services.png'
-}
-
-const CARD_FEATURES: Record<Category, { title: string; body: string }[]> = {
-  FRONTEND:  [
-    { title: 'Semantica & a11y', body: 'Struttura DOM pensata per screen reader, crawler e performance.' },
-    { title: 'Animazioni GPU',   body: 'GSAP + CSS custom properties. Nessuna jank, mai.' },
-  ],
-  BACKEND: [
-    { title: 'Event-driven',  body: 'Architetture non bloccanti con Node.js e worker threads.' },
-    { title: 'Data modeling', body: 'Schema rigorosi con Mongoose e aggregation pipeline.' },
-  ],
-  STRUMENTI: [
-    { title: 'CI/CD zero friction', body: 'GitHub Actions + Vercel: push e in 30s è live.' },
-    { title: 'Git history pulita',  body: 'Conventional commits e rebase interattivo come standard.' },
-  ],
+  STRUMENTI: '/icon/services.png',
 }
 
 const ORBIT_R = 210
 const CX = 300
 const CY = 300
-const AUTO_INTERVAL = 2200
+const AUTO_INTERVAL = 3500
 
-// Round to N decimals — same result on server and client
 const r4 = (n: number) => Math.round(n * 1e4) / 1e4
 
 function getPositioned(skills: Skill[]) {
@@ -82,12 +178,9 @@ export default function SkillsSection() {
   const autoRef  = useRef<ReturnType<typeof setInterval> | null>(null)
   const indexRef = useRef(0)
 
-  // Hydrate only on client
   useEffect(() => { setMounted(true) }, [])
 
   const visibleSkills = SKILLS.filter(s => s.category === activeCategory)
-  
-  const features      = CARD_FEATURES[activeCategory]
   const positioned    = getPositioned(visibleSkills)
 
   const showSkill = useCallback((skill: Skill) => {
@@ -157,7 +250,7 @@ export default function SkillsSection() {
                       background 0.4s cubic-bezier(0.16,1,0.3,1),
                       box-shadow 0.4s cubic-bezier(0.16,1,0.3,1);
         }
-        .sk-pill:hover { border-color: var(--border-bright); color: var(--blue-bright); background: rgba(0,102,255,0.05); }
+        .sk-pill:hover  { border-color: var(--border-bright); color: var(--blue-bright); background: rgba(0,102,255,0.05); }
         .sk-pill.active { border-color: var(--blue-bright); color: var(--blue-bright); background: rgba(45,143,255,0.08); box-shadow: 0 0 24px rgba(0,102,255,0.14); }
 
         .sk-detail-card {
@@ -187,7 +280,7 @@ export default function SkillsSection() {
         .sk-bar-fill {
           height: 100%; background: var(--blue-grad); border-radius: 2px;
           box-shadow: 0 0 12px rgba(0,102,255,0.5);
-          animation: sk-bar-fill 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+          animation: sk-bar-fill 2s cubic-bezier(0.16,1,0.3,1) forwards;
         }
 
         @keyframes sk-node-in {
@@ -199,253 +292,110 @@ export default function SkillsSection() {
           animation: sk-node-in 0.55s cubic-bezier(0.34,1.4,0.64,1) forwards;
           cursor: pointer; z-index: 2;
         }
-      .sk-node {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  animation: sk-node-in 0.55s cubic-bezier(0.34,1.4,0.64,1) forwards;
-  cursor: pointer;
-  z-index: 2;
-}
+        .sk-node-box {
+          width: 62px; height: 62px; border-radius: 18px;
+          display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(180deg, rgba(24,33,54,.96) 0%, rgba(13,20,36,.98) 100%);
+          border: 1px solid rgba(45,143,255,.15);
+          backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 10px 28px rgba(0,0,0,.35);
+          transition: transform .45s cubic-bezier(.16,1,.3,1),
+                      border-color .35s cubic-bezier(.16,1,.3,1),
+                      box-shadow .35s cubic-bezier(.16,1,.3,1),
+                      background .35s cubic-bezier(.16,1,.3,1);
+        }
+        .sk-node-box img { width: 32px; height: 32px; object-fit: contain; transition: transform .35s ease, filter .35s ease; }
+        .sk-node.active-node .sk-node-box,
+        .sk-node:hover .sk-node-box {
+          background: linear-gradient(180deg, rgba(33,48,78,.98), rgba(18,28,50,.98));
+          border-color: rgba(45,143,255,.75);
+          transform: scale(1.18) translateY(-6px);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.08),
+                      0 0 20px rgba(45,143,255,.28),
+                      0 0 55px rgba(45,143,255,.18),
+                      0 18px 38px rgba(0,0,0,.45);
+        }
+        .sk-node.active-node img, .sk-node:hover img { transform: scale(1.08); }
+        .sk-node-label {
+          position: absolute; top: calc(100% + 10px); left: 50%;
+          transform: translateX(-50%);
+          font-family: 'Space Mono', monospace; font-size: .56rem; letter-spacing: .08em;
+          color: var(--muted); white-space: nowrap; opacity: .65; transition: all .3s ease;
+        }
+        .sk-node.active-node .sk-node-label, .sk-node:hover .sk-node-label { color: var(--white); opacity: 1; }
 
-.sk-node-box {
-  width: 62px;
-  height: 62px;
-  border-radius: 18px;
+        @keyframes sk-halo-pulse {
+          0%   { transform: translate(-50%,-50%) scale(.85); opacity: .35; }
+          100% { transform: translate(-50%,-50%) scale(1.7);  opacity: 0; }
+        }
+        .sk-halo {
+          position: absolute; top: 50%; left: 50%;
+          width: 64px; height: 64px; border-radius: 50%;
+          border: 1px solid rgba(45,143,255,.8);
+          box-shadow: 0 0 25px rgba(45,143,255,.35);
+          pointer-events: none; animation: sk-halo-pulse 1.8s ease infinite;
+        }
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        .sk-ring-outer {
+          position: absolute; inset: -22px; border-radius: 50%;
+          border: 1px dashed rgba(45,143,255,.22);
+          animation: sk-spin-cw 22s linear infinite; pointer-events: none;
+        }
+        .sk-ring-inner {
+          position: absolute; inset: -9px; border-radius: 50%;
+          border: 1px solid rgba(45,143,255,.12);
+          animation: sk-spin-ccw 13s linear infinite; pointer-events: none;
+        }
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(24,33,54,.96) 0%,
-      rgba(13,20,36,.98) 100%
-    );
+        @keyframes sk-hex-pulse {
+          0%,100% { filter: drop-shadow(0 0 8px rgba(45,143,255,.45)); }
+          50%      { filter: drop-shadow(0 0 24px rgba(45,143,255,.85)); }
+        }
+        .sk-hex-svg { animation: sk-hex-pulse 3s ease-in-out infinite; }
 
-  border: 1px solid rgba(45,143,255,.15);
+        .sk-panel {
+          background: var(--navy-card); border: 1px solid var(--border);
+          border-radius: 24px; padding: 1.75rem; position: relative; overflow: hidden;
+        }
+        .sk-panel::before {
+          content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+        }
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+        .sk-badge {
+          display: inline-flex; align-items: center; gap: .45rem;
+          font-family: 'Space Mono', monospace; font-size: .58rem; letter-spacing: .14em;
+          color: var(--chrome-dark); background: var(--glass-bg);
+          border: 1px solid var(--glass-border); border-radius: 999px; padding: .28rem .85rem;
+        }
 
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 10px 28px rgba(0,0,0,.35);
+        .sk-center-icon { animation: centerSwitch .45s cubic-bezier(.16,1,.3,1); }
+        @keyframes centerSwitch {
+          0%   { opacity: 0; transform: scale(.55) rotate(-18deg); }
+          55%  { opacity: 1; transform: scale(1.12) rotate(6deg); }
+          100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
 
-  transition:
-    transform .45s cubic-bezier(.16,1,.3,1),
-    border-color .35s cubic-bezier(.16,1,.3,1),
-    box-shadow .35s cubic-bezier(.16,1,.3,1),
-    background .35s cubic-bezier(.16,1,.3,1);
-}
+        @keyframes sk-live-dot {
+          0%,100% { opacity: 1; transform: scale(1); }
+          50%      { opacity: .4; transform: scale(.7); }
+        }
+        .sk-live-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: var(--blue-bright); box-shadow: 0 0 8px rgba(45,143,255,.8);
+          animation: sk-live-dot 1.6s ease infinite;
+        }
 
-.sk-node-box img{
-  width:32px;
-  height:32px;
-  object-fit:contain;
-  transition:
-    transform .35s ease,
-    filter .35s ease;
-}
+        .sk-features {
+          display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+          margin-top: 1.75rem; border-top: 1px solid var(--border); padding-top: 1.5rem;
+          transition: opacity 0.18s ease, transform 0.18s ease;
+        }
+        .sk-features.hidden  { opacity: 0; transform: translateY(6px); }
+        .sk-features.visible { opacity: 1; transform: translateY(0); }
 
-.sk-node.active-node .sk-node-box,
-.sk-node:hover .sk-node-box{
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(33,48,78,.98),
-      rgba(18,28,50,.98)
-    );
-
-  border-color: rgba(45,143,255,.75);
-
-  transform: scale(1.18) translateY(-6px);
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.08),
-    0 0 20px rgba(45,143,255,.28),
-    0 0 55px rgba(45,143,255,.18),
-    0 18px 38px rgba(0,0,0,.45);
-}
-
-.sk-node.active-node img,
-.sk-node:hover img{
-  transform:scale(1.08);
-}
-
-.sk-node-label{
-  position:absolute;
-  top:calc(100% + 10px);
-  left:50%;
-  transform:translateX(-50%);
-  font-family:'Space Mono', monospace;
-  font-size:.56rem;
-  letter-spacing:.08em;
-  color:var(--muted);
-  white-space:nowrap;
-  opacity:.65;
-  transition:all .3s ease;
-}
-
-.sk-node.active-node .sk-node-label,
-.sk-node:hover .sk-node-label{
-  color:var(--white);
-  opacity:1;
-}
-
-@keyframes sk-halo-pulse{
-  0%{
-    transform:translate(-50%,-50%) scale(.85);
-    opacity:.35;
-  }
-  100%{
-    transform:translate(-50%,-50%) scale(1.7);
-    opacity:0;
-  }
-}
-
-.sk-halo{
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:64px;
-  height:64px;
-  border-radius:50%;
-  border:1px solid rgba(45,143,255,.8);
-  box-shadow:0 0 25px rgba(45,143,255,.35);
-  pointer-events:none;
-  animation:sk-halo-pulse 1.8s ease infinite;
-}
-
-@keyframes sk-line-dash{
-  to{
-    stroke-dashoffset:-20;
-  }
-}
-
-
-
-.sk-ring-outer{
-  position:absolute;
-  inset:-22px;
-  border-radius:50%;
-  border:1px dashed rgba(45,143,255,.22);
-  animation:sk-spin-cw 22s linear infinite;
-  pointer-events:none;
-}
-
-.sk-ring-inner{
-  position:absolute;
-  inset:-9px;
-  border-radius:50%;
-  border:1px solid rgba(45,143,255,.12);
-  animation:sk-spin-ccw 13s linear infinite;
-  pointer-events:none;
-}
-
-@keyframes sk-hex-pulse{
-  0%,100%{
-    filter:drop-shadow(0 0 8px rgba(45,143,255,.45));
-  }
-  50%{
-    filter:drop-shadow(0 0 24px rgba(45,143,255,.85));
-  }
-}
-
-.sk-hex-svg{
-  animation:sk-hex-pulse 3s ease-in-out infinite;
-}
-
-.sk-panel{
-  background:var(--navy-card);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:1.75rem;
-  position:relative;
-  overflow:hidden;
-}
-
-.sk-panel::before{
-  content:'';
-  position:absolute;
-  top:0;
-  left:10%;
-  right:10%;
-  height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
-}
-
-.sk-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:.45rem;
-  font-family:'Space Mono', monospace;
-  font-size:.58rem;
-  letter-spacing:.14em;
-  color:var(--chrome-dark);
-  background:var(--glass-bg);
-  border:1px solid var(--glass-border);
-  border-radius:999px;
-  padding:.28rem .85rem;
-}
-
-@keyframes sk-live-dot{
-  0%,100%{
-    opacity:1;
-    transform:scale(1);
-  }
-  50%{
-    opacity:.4;
-    transform:scale(.7);
-  }
-}
-
-.sk-center-icon{
-
-    animation:centerSwitch .45s cubic-bezier(.16,1,.3,1);
-
-}
-
-@keyframes centerSwitch{
-
-    0%{
-        opacity:0;
-        transform:scale(.55) rotate(-18deg);
-    }
-
-    55%{
-        opacity:1;
-        transform:scale(1.12) rotate(6deg);
-    }
-
-    100%{
-        opacity:1;
-        transform:scale(1) rotate(0);
-    }
-
-}
-
-.sk-live-dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:var(--blue-bright);
-  box-shadow:0 0 8px rgba(45,143,255,.8);
-  animation:sk-live-dot 1.6s ease infinite;
-}
-
-@media (max-width:1100px){
-  .sk-main-grid{
-    grid-template-columns:1fr!important;
-  }
-}
-
-@media (max-width:700px){
-  #skills{
-    padding:90px 5%!important;
-  }
-}
+        @media (max-width:1100px) { .sk-main-grid { grid-template-columns: 1fr!important; } }
+        @media (max-width:700px)  { #skills { padding: 90px 5%!important; } }
       `}</style>
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -453,7 +403,6 @@ export default function SkillsSection() {
 
           {/* ══ LEFT ══ */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-
             <div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '1.2rem', marginBottom: '0.9rem' }}>
                 <span style={{ fontFamily: "'Space Mono',monospace", fontSize: '0.68rem', color: 'var(--blue-bright)', letterSpacing: '0.3em' }}>03</span>
@@ -475,7 +424,6 @@ export default function SkillsSection() {
               ))}
             </div>
 
-            {/* Detail card — always populated via auto-cycle */}
             <div className="sk-detail-card">
               <div className={`sk-card-inner ${cardVisible ? 'visible' : 'hidden'}`}>
                 {activeSkill && (
@@ -508,8 +456,6 @@ export default function SkillsSection() {
               </div>
             </div>
 
-        
-
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '2rem' }}>
               <a href="#contact" style={{
                 display: 'inline-flex', alignItems: 'center', gap: '0.55rem',
@@ -518,7 +464,7 @@ export default function SkillsSection() {
                 fontFamily: "'Space Mono',monospace", letterSpacing: '0.06em',
                 textDecoration: 'none', boxShadow: '0 0 28px rgba(0,102,255,0.25)',
               }}>
-              Contattami
+                Contattami
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
                 </svg>
@@ -526,7 +472,7 @@ export default function SkillsSection() {
             </div>
           </div>
 
-          {/* ══ RIGHT: panel + orbit ══ */}
+          {/* ══ RIGHT ══ */}
           <div className="sk-panel">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <span style={{ fontFamily: "'Syne',sans-serif", fontSize: '1.1rem', fontWeight: 700, color: 'var(--white)' }}>
@@ -538,7 +484,6 @@ export default function SkillsSection() {
               </span>
             </div>
 
-            {/* Orbit — rendered only after mount to avoid SSR/client mismatch */}
             <div
               style={{ position: 'relative', width: '100%', paddingBottom: '100%' }}
               onMouseEnter={() => setIsHovering(true)}
@@ -553,12 +498,7 @@ export default function SkillsSection() {
                           <stop offset="0%" stopColor="rgba(0,102,255,0.1)"/>
                           <stop offset="100%" stopColor="transparent"/>
                         </radialGradient>
-                        <linearGradient id="sk-lg" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#2D8FFF" stopOpacity="0.9"/>
-                          <stop offset="100%" stopColor="#0066FF" stopOpacity="0.9"/>
-                        </linearGradient>
                       </defs>
-
                       <circle cx={CX} cy={CY} r={90} fill="url(#sk-cg)"/>
                       {[55, 100, 150, 200].map((r, i) => (
                         <circle key={r} cx={CX} cy={CY} r={r} fill="none"
@@ -569,9 +509,6 @@ export default function SkillsSection() {
                       <circle cx={CX} cy={CY} r={ORBIT_R} fill="none"
                         stroke="rgba(0,102,255,0.14)" strokeWidth={1.2} strokeDasharray="4 6"
                       />
-
-               
-
                       {activeSkill && (() => {
                         const s = positioned.find(p => p.label === activeSkill.label)
                         if (!s) return null
@@ -591,33 +528,16 @@ export default function SkillsSection() {
                           </linearGradient>
                         </defs>
                         <polygon points="40,5 68,20 68,60 40,75 12,60 12,20" fill="var(--navy-card)" stroke="url(#sk-hg)" strokeWidth="1.5"/>
-<foreignObject x="20" y="20" width="40" height="40">
-  <div
-    key={activeCategory}
-    className="sk-center-icon"
-    style={{
-      width: '40px',
-      height: '40px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}
-  >
-    <Image
-      src={CENTER_ICON[activeCategory]}
-      alt={activeCategory}
-      width={34}
-      height={34}
-      style={{
-        objectFit: 'contain',
-        userSelect: 'none',
-        pointerEvents: 'none',
-        filter:
-          'drop-shadow(0 0 8px rgba(45,143,255,.35)) drop-shadow(0 0 16px rgba(45,143,255,.18))'
-      }}
-    />
-  </div>
-</foreignObject>                      </svg>
+                        <foreignObject x="20" y="20" width="40" height="40">
+                          <div key={activeCategory} className="sk-center-icon"
+                            style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Image src={CENTER_ICON[activeCategory]} alt={activeCategory} width={34} height={34}
+                              style={{ objectFit: 'contain', userSelect: 'none', pointerEvents: 'none',
+                                filter: 'drop-shadow(0 0 8px rgba(45,143,255,.35)) drop-shadow(0 0 16px rgba(45,143,255,.18))' }}
+                            />
+                          </div>
+                        </foreignObject>
+                      </svg>
                     </div>
 
                     {/* Skill nodes */}
@@ -631,32 +551,19 @@ export default function SkillsSection() {
                           {isActive && <div className="sk-halo"/>}
                           <div className="sk-node-box" style={{
                             borderColor: isActive ? 'var(--blue-bright)' : 'rgba(255,255,255,0.15)',
-                            boxShadow: isActive
-                              ? '0 0 32px rgba(45,143,255,0.32), 0 4px 20px rgba(0,0,0,0.15)'
-                              : '0 4px 20px rgba(0,0,0,0.25)',
+                            boxShadow: isActive ? '0 0 32px rgba(45,143,255,0.32), 0 4px 20px rgba(0,0,0,0.15)' : '0 4px 20px rgba(0,0,0,0.25)',
                           }}>
-                        <Image
-  src={`/icon/${skill.icon}`}
-  alt={skill.label}
-  width={34}
-  height={34}
-  style={{
-    objectFit: 'contain',
-    transition: 'all .35s ease',
-    filter:
-      skill.label === 'GitHub' || skill.label === 'Vercel'
-        ? 'brightness(0) invert(1)'
-        : skill.label === 'VS Code'
-        ? 'drop-shadow(0 0 8px rgba(45,143,255,.45))'
-        : 'none'
-  }}
-/>
-
-</div>
-
-<span className="sk-node-label">
-  {skill.label}
-</span>
+                            <Image src={`/icon/${skill.icon}`} alt={skill.label} width={34} height={34}
+                              style={{ objectFit: 'contain', transition: 'all .35s ease',
+                                filter: skill.label === 'GitHub' || skill.label === 'Vercel'
+                                  ? 'brightness(0) invert(1)'
+                                  : skill.label === 'VS Code'
+                                  ? 'drop-shadow(0 0 8px rgba(45,143,255,.45))'
+                                  : 'none'
+                              }}
+                            />
+                          </div>
+                          <span className="sk-node-label">{skill.label}</span>
                         </div>
                       )
                     })}
@@ -665,8 +572,9 @@ export default function SkillsSection() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginTop: '1.75rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-              {features.map(f => (
+            {/* Feature cards — aggiornate per ogni skill attiva */}
+            <div key={activeSkill?.label} className={`sk-features ${cardVisible ? 'visible' : 'hidden'}`}>
+              {(activeSkill?.features ?? []).map(f => (
                 <div key={f.title}>
                   <h4 style={{ fontFamily: "'Syne',sans-serif", fontSize: '0.9rem', fontWeight: 700, color: 'var(--white)', margin: '0 0 0.35rem' }}>{f.title}</h4>
                   <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: '0.78rem', color: 'var(--chrome-dark)', lineHeight: 1.65, margin: 0 }}>{f.body}</p>

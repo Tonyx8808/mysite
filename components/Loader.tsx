@@ -6,12 +6,13 @@ const MESSAGES = [
   'Caricamento moduli visivi...',
   'Ottimizzazione pipeline...',
   'Rendering esperienza...',
-  "Pronto all'avvio...",   // apostrofo ASCII normale
+  "Pronto all'avvio...",
 ]
 
 export default function Loader({ onDone }: { onDone: () => void }) {
   const [percent, setPercent] = useState(0)
   const [done, setDone] = useState(false)
+  const [remove, setRemove] = useState(false)   // ⭐ rimuove il loader dal DOM
 
   useEffect(() => {
     const duration = 2400
@@ -23,18 +24,29 @@ export default function Loader({ onDone }: { onDone: () => void }) {
       const elapsed = Date.now() - start
       const t = Math.min(elapsed / duration, 1)
       setPercent(Math.round(ease(t) * 100))
+
       if (t < 1) {
         requestAnimationFrame(tick)
       } else {
         setPercent(100)
+
         setTimeout(() => {
           setDone(true)
-          setTimeout(onDone, 900)
+
+          // ⭐ dopo la dissolvenza, rimuove il loader
+          setTimeout(() => {
+            onDone()
+            setRemove(true)
+          }, 900)
         }, 350)
       }
     }
+
     requestAnimationFrame(tick)
   }, [onDone])
+
+  // ⭐ Loader completamente rimosso → non copre più nulla
+  if (remove) return null
 
   const msgIdx = Math.min(
     Math.floor((percent / 100) * (MESSAGES.length - 1)),
@@ -47,7 +59,6 @@ export default function Loader({ onDone }: { onDone: () => void }) {
       className={done ? 'done' : ''}
       style={{
         pointerEvents: done ? 'none' : 'all',
-        /* ✅ sfondo solido navy — niente trasparenza */
         background: 'var(--navy)',
         transition: 'opacity 0.9s ease, transform 0.9s ease',
         position: 'fixed',
@@ -55,10 +66,12 @@ export default function Loader({ onDone }: { onDone: () => void }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 10000,
+
+        // ⭐ z-index abbassato → CookieBanner è sopra
+        zIndex: 9998,
       }}
     >
-      {/* Glow ambientale centrato */}
+      {/* Glow ambientale */}
       <div style={{
         position: 'absolute',
         width: '600px', height: '600px',
@@ -86,10 +99,8 @@ export default function Loader({ onDone }: { onDone: () => void }) {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-          {/* Cerchio neon — CSS class definita in globals */}
           <div className="orbit" />
 
-          {/* Logo AR — solo testo, niente emoji */}
           <div
             className="logo-3d"
             style={{

@@ -87,12 +87,12 @@ export const metadata: Metadata = {
 // ── Root Layout ──────────────────────────────────────────────────
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="it"
-      className={`${syne.variable} ${spaceMono.variable} ${dmSans.variable}`}
-    >
-      <body>
-        {/* JSON-LD esterno (compatibile CSP strict) */}
+   <html
+  lang="it"
+  className={`${syne.variable} ${spaceMono.variable} ${dmSans.variable}`}
+  style={{ background: '#060914' }}
+>
+  <body style={{ background: '#060914' }}>
      <script
   type="application/ld+json"
   dangerouslySetInnerHTML={{
